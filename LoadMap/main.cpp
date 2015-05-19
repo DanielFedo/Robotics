@@ -13,6 +13,7 @@ int main()
 
 	map->loadToMatrix(filename);
 
+	map->printMap();
 
 	return 0;
 }

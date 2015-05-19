@@ -38,12 +38,15 @@ void Map::loadToMatrix(const char* filename)
 		unsigned int g = image[i + 1];
 		unsigned int b = image[i + 2];
 
+		// Black pixel
 		if ((r == 0) & (g == 0) & (b == 0))
 			cell = BLOCK;
+		// White pixel
 		else if ((r == 255) & (g == 255) & (b == 255))
 			cell = FREE;
+		// Unknown Pixel
 		else
-			cell = UNKOWN;
+			cell = UNKNOWN;
 
 		matrix[i / width][i % width] = cell;
 	}
@@ -68,4 +71,18 @@ void Map::writePng(const char* filename, std::vector<unsigned char>& image, unsi
 
 	//if there's an error, display it
 	if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
+}
+
+// Prints the nap to the console
+void Map::printMap()
+{
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			std::cout <<  matrix[i][j] << " ";
+		}
+
+		std::cout << std::endl;
+	}
 }
