@@ -9,7 +9,7 @@ std::vector<unsigned char> image; //the raw pixels
 int main()
 {
 	Map *map = new Map();
-	const char* filename = "hospital_section.png";
+	const char* filename = "hospital_section2.png";
 
 	map->loadToMatrix(filename);
 

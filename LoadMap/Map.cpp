@@ -48,7 +48,7 @@ void Map::loadToMatrix(const char* filename)
 		else
 			cell = UNKNOWN;
 
-		matrix[i / width][i % width] = cell;
+		matrix[(i / 4) / width][(i / 4) % width] = cell;
 	}
 }
 
