@@ -116,10 +116,27 @@ int main(int argc, char** argv)
 			}
 		}
 
-		if (isObstacleInFront)
-			pp.SetSpeed(0, 0.5);
-		else
+		if (!isObstacleInFront)
 			pp.SetSpeed(0.5, 0);
+		else
+		{
+			for (int i = 0; i < 120 - MAX_ANGLE_FOR_AVOIDANCE; i++)
+			{
+				if(lp[minIndex - i] > MAX_DIST_TO_OBSTACLE)
+				{
+					pp.SetSpeed(0, -0.5);
+					break;
+				}
+				else if (lp[maxIndex + i] > MAX_DIST_TO_OBSTACLE)
+				{
+					pp.SetSpeed(0, 0.5);
+					break;
+				}
+			}
+
+
+		}
+
 	}
 
 	return 0;
