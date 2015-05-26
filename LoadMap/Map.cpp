@@ -52,6 +52,48 @@ void Map::loadToMatrix(const char* filename)
 	}
 }
 
+void Map::expand()
+{
+	// Init the matrix values
+	for (int i = 0; i < width * height * 4; i += 4)
+	{
+
+		unsigned int r = image[i];
+		unsigned int g = image[i + 1];
+		unsigned int b = image[i + 2];
+
+		// If its a Black pixel - expand it
+		if ((r == 0) & (g == 0) & (b == 0))
+		{
+			expandPixel(i, 3);
+		}
+
+	}
+
+	writePng("helloyair.png", image, width, height);
+}
+
+void Map::expandPixel(int location, int pixelRobot)
+{
+	int startLocation = (location - (width * pixelRobot * 4)) - (pixelRobot * 4);
+
+	int endLocation = (startLocation + (pixelRobot * (2 + 1)) * width * 4);
+
+	for (int i = startLocation; i < endLocation; i += width * 4)
+	{
+		for (int j = 0;j < (pixelRobot * 2 + 1) * 4 && i > 0; j += 4)
+		{
+			if (i + j + 3 < width * height *4)
+			{
+				image[i + j] = 255;
+				image[i + j + 1] = 0;
+				image[i + j + 2] = 0;
+				image[i + j + 3] = 255;
+			}
+		}
+	}
+}
+
 //Decode from disk to raw pixels with a single function call
 void Map::loadPng(const char* filename)
 {

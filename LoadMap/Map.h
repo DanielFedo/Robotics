@@ -28,6 +28,10 @@ public:
 	void writePng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height);
 	void loadToMatrix(const char* filename);
 	void printMap();
+	void expand();
+
+private:
+	void expandPixel(int location, int pixelAmount);
 };
 
 #endif /* MAP_H_ */
