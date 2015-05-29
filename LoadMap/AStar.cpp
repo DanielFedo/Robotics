@@ -7,9 +7,79 @@
 
 #include "AStar.h"
 
+
 AStar::AStar() {
 	// TODO Auto-generated constructor stub
 
+}
+void AStar::FindPath (int startX, int startY, int goalX, int goalY)
+{
+	std::list<Point*> openList;
+	std::list<Point*> closedList;
+	std::vector<Point*> finalPath;
+	std::list<Point*>::iterator listIterator;
+
+	Point *startPoint = new Point(startX, startY);
+	Point *endPoint = new Point(goalX, goalY);
+	Point *currentPoint = new Point(-1, -1);
+	Point *adjacentPoint = new Point(-1, -1);
+
+	while (currentPoint != endPoint)
+	{
+		// Search for point with the smallest F score in the open list
+		for (listIterator = openList.begin(); listIterator != openList.end() ;listIterator++)
+		{
+			if ((listIterator == openList.begin()) ||
+				(*listIterator)->getFScore() <= currentPoint->getFScore())
+			{
+				currentPoint = *listIterator;
+			}
+		}
+
+		// Stop if we reached the end
+		if (currentPoint == endPoint)
+			break;
+
+		// Remove the current point from the open list
+		openList.remove(currentPoint);
+		currentPoint->isOpen = false;
+
+		// Add the current point to the closed list
+		openList.push_back(currentPoint);
+
+		// Scan all the adjacent points
+		for (int i = -1; i < 2; i++)
+		{
+			for (int j = -1; j < 2; j++)
+			{
+				// If its the current point - then pass
+				if (i == 0 && j == 0)
+					continue;
+
+				// If we are in a corner - then pass (we don't move in diagonal)
+				if (i != 0 && j != 0)
+					continue;
+
+				// Get this adjacent point
+				adjacentPoint = new Point(currentPoint->x + i, currentPoint->y + j);
+			}
+		}
+	}
+}
+
+bool isInList(Point p, std::list<Point> list)
+{
+	std::list<Point*>::iterator i;
+
+	for (i = list.begin(); i != list.end(); ++i) {
+
+
+		if (i == p) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void AStar::FindPath ()

@@ -70,3 +70,4 @@ int Graph::getEdge(int i, int j)
 
 	return edgeWeight;
 }
+

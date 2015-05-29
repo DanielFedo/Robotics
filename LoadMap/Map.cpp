@@ -70,7 +70,7 @@ void Map::expand()
 
 	}
 
-	writePng("helloyair.png", image, width, height);
+	//writePng("helloyair.png", image, width, height);
 }
 
 void Map::expandPixel(int location, int pixelRobot)
@@ -85,7 +85,7 @@ void Map::expandPixel(int location, int pixelRobot)
 		{
 			if (i + j + 3 < width * height *4)
 			{
-				image[i + j] = 255;
+				image[i + j] = 0;
 				image[i + j + 1] = 0;
 				image[i + j + 2] = 0;
 				image[i + j + 3] = 255;
