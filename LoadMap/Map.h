@@ -29,6 +29,7 @@ public:
 	void loadToMatrix(const char* filename);
 	void printMap();
 	void expand();
+	bool isCellFree(int x, int y);
 
 private:
 	void expandPixel(int location, int pixelAmount);

@@ -18,15 +18,19 @@ void AStar::FindPath (int startX, int startY, int goalX, int goalY)
 	std::list<Point*> closedList;
 	std::vector<Point*> finalPath;
 	std::list<Point*>::iterator listIterator;
+	std::map<Point*, Point*> cameFrom;
 
 	Point *startPoint = new Point(startX, startY);
 	Point *endPoint = new Point(goalX, goalY);
 	Point *currentPoint = new Point(-1, -1);
 	Point *adjacentPoint = new Point(-1, -1);
 
+	openList.push_back(startPoint);
+
 	while (currentPoint != endPoint)
 	{
 		// Search for point with the smallest F score in the open list
+		// and put it as the currentPoint
 		for (listIterator = openList.begin(); listIterator != openList.end() ;listIterator++)
 		{
 			if ((listIterator == openList.begin()) ||
@@ -38,16 +42,18 @@ void AStar::FindPath (int startX, int startY, int goalX, int goalY)
 
 		// Stop if we reached the end
 		if (currentPoint == endPoint)
+		{
+			// Calculate and return the path
 			break;
+		}
 
 		// Remove the current point from the open list
 		openList.remove(currentPoint);
-		currentPoint->isOpen = false;
 
 		// Add the current point to the closed list
-		openList.push_back(currentPoint);
+		closedList.push_back(currentPoint);
 
-		// Scan all the adjacent points
+		// Scan all the adjacent points of the current point
 		for (int i = -1; i < 2; i++)
 		{
 			for (int j = -1; j < 2; j++)
@@ -59,6 +65,43 @@ void AStar::FindPath (int startX, int startY, int goalX, int goalY)
 				// If we are in a corner - then pass (we don't move in diagonal)
 				if (i != 0 && j != 0)
 					continue;
+
+				// Check if this point is in the closed list
+				bool isPointInClosedList = false;
+				for (listIterator = closedList.begin(); listIterator != closedList.end(); listIterator++)
+				{
+					if ((*listIterator)->x == i && (*listIterator)->y == j)
+					{
+						isPointInClosedList = true;
+						break;
+					}
+				}
+
+				// If this point is in the closed list - continue
+				if (isPointInClosedList)
+					continue;
+
+				// Check if this point is in the open list
+				bool isPointInOpenedList = false;
+				for (listIterator = openList.begin(); listIterator != openList.end(); listIterator++)
+				{
+					if ((*listIterator)->x == i && (*listIterator)->y == j)
+					{
+						isPointInOpenedList = true;
+						break;
+					}
+				}
+
+				// If this point is in the open list - continue
+				if (isPointInOpenedList)
+					continue;
+
+				// Check if cell is freed for the robot
+
+
+				Point *thisPoint = new Point(i, j);
+				thisPoint->calculateScores(endPoint);
+				openList.push_front(thisPoint);
 
 				// Get this adjacent point
 				adjacentPoint = new Point(currentPoint->x + i, currentPoint->y + j);

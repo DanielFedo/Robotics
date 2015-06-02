@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <map>
 #include "Point.h"
 
 class AStar {

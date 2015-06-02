@@ -128,3 +128,8 @@ void Map::printMap()
 		std::cout << std::endl;
 	}
 }
+
+bool map::isCellFree(int x, int y)
+{
+
+}
