@@ -6,6 +6,9 @@
  */
 
 #include "Point.h"
+#include <iostream>
+#include <cstdlib>
+
 
 Point::Point(int x, int y) {
 	this->x = x;
@@ -53,3 +56,10 @@ void Point::setParent(Point *parent)
 	this->parent = parent;
 }
 
+bool Point::isEqual(Point *point)
+{
+	if ((this->x == point->x) && (this->y == point->y))
+		return true;
+	else
+		return false;
+}

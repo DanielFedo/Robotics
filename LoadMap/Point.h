@@ -30,6 +30,7 @@ public:
 	int getFScore();
 	void calculateScores(Point *end);
 	void setParent(Point *parent);
+	bool isEqual(Point *point);
 
 };
 

@@ -129,7 +129,38 @@ void Map::printMap()
 	}
 }
 
-bool map::isCellFree(int x, int y)
+bool Map::isCellFree(int x, int y)
 {
+	if (matrix[x][y] == FREE)
+		return true;
+	else
+		return false;
+}
+
+void Map::convertToGrid()
+{
+	double widthOfRoomInCM = 4000;
+
+	double sizeOfPixelInCM = widthOfRoomInCM / width;
+
+	double squareCM = 8;
+
+	double numberOfPixelsInSquare = squareCM / sizeOfPixelInCM;
+
+	for (int i = 0; i < width - numberOfPixelsInSquare; i += numberOfPixelsInSquare)
+	{
+		for (int j = 0; j < height - numberOfPixelsInSquare; j += numberOfPixelsInSquare)
+		{
+
+			for (int ii = 0; ii < numberOfPixelsInSquare; ii++)
+			{
+				for (int jj = 0; jj < numberOfPixelsInSquare; jj++)
+				{
+					if ()
+				}
+			}
+
+		}
+	}
 
 }

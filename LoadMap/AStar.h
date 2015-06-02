@@ -11,16 +11,16 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include <map>
+#include <map>;
 #include "Point.h"
+#include "Map.h"
 
 class AStar {
 
 public:
 	AStar();
-	void FindPath ();
-	void FindPath (int startX, int startY, int goalX, int goalY);
-	bool isInList(Point *p, std::list<Point>& a);
+	std::list<Point*> FindPath (int startX, int startY, int goalX, int goalY, Map *map);
+	void isInList(Point *p, std::list<Point>& a);
 
 	virtual ~AStar();
 };

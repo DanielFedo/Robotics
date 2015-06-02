@@ -30,6 +30,7 @@ public:
 	void printMap();
 	void expand();
 	bool isCellFree(int x, int y);
+	void convertToGrid();
 
 private:
 	void expandPixel(int location, int pixelAmount);
