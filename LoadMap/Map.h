@@ -18,6 +18,7 @@ public:
 	enum CellIndication {FREE = 0, BLOCK = 1, UNKNOWN = 2};
 
 	std::vector< std::vector<CellIndication> > matrix;
+	std::vector< std::vector<CellIndication> > newMatrix;
 	std::vector<unsigned char> image;
 
 
@@ -31,6 +32,7 @@ public:
 	void expand();
 	bool isCellFree(int x, int y);
 	void convertToGrid();
+	void matrixToPng();
 
 private:
 	void expandPixel(int location, int pixelAmount);

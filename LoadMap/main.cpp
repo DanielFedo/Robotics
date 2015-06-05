@@ -13,9 +13,17 @@ int main()
 
 	map->loadPng(filename);
 
-	map->expand();
+	//map->expand();
 
 	map->loadToMatrix(filename);
+
+	map->matrixToPng();
+
+	map->printMap();
+
+	map->convertToGrid();
+
+
 
 	map->printMap();
 
