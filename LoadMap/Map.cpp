@@ -17,14 +17,14 @@ Map::~Map() {
 }
 
 // Loads a png file into a matrix
-void Map::loadToMatrix(const char* filename)
+void Map::loadToMatrix()
 {
 	// Resize the matrix to match the image size
-	matrix.resize(width);
+	matrix.resize(gridWidth);
 
-	for (int i = 0; i < width; i++)
+	for (int i = 0; i < gridWidth; i++)
 	{
-		matrix[i].resize(height);
+		matrix[i].resize(gridHeight);
 	}
 
 	int r;
@@ -33,11 +33,11 @@ void Map::loadToMatrix(const char* filename)
 	CellIndication cell;
 
 	// Init the matrix values
-	for (int i = 0; i < width * height * 4; i += 4)
+	for (int i = 0; i < gridWidth * gridHeight * 4; i += 4)
 	{
-		r = image[i];
-		g = image[i + 1];
-		b = image[i + 2];
+		r = grid[i];
+		g = grid[i + 1];
+		b = grid[i + 2];
 
 		// Black pixel
 		if ((r == 0) & (g == 0) & (b == 0))
@@ -49,12 +49,20 @@ void Map::loadToMatrix(const char* filename)
 		else
 			cell = UNKNOWN;
 
-		matrix[(i / 4) / width][(i / 4) % width] = cell;
+		matrix[(i / 4) / gridWidth][(i / 4) % gridWidth] = cell;
+
+		if ((i / 4) % gridWidth == 0)
+			std::cout << std::endl;
+
+		std::cout << cell;
+
+
+
 	}
 
-	for (int i = 0; i < height; i++)
+	for (int i = 0; i < gridHeight; i++)
 	{
-		for (int j = 0; j < width; j++)
+		for (int j = 0; j < gridWidth; j++)
 		{
 			std::cout <<  matrix[i][j] << "";
 		}
@@ -195,103 +203,76 @@ bool Map::isCellFree(int x, int y)
 
 void Map::convertToGrid()
 {
+	// Define variables.
 	double MapResolutionCM = 2.5;
 	double GridResolutionCM = 10;
 	double GridResolutionPixels = GridResolutionCM / MapResolutionCM; // 4 pixels
 	std::vector<unsigned char> newImage(((int)((width * height * 4) / GridResolutionPixels)));
 	bool foundBlack;
 	unsigned int newLocation;
+	unsigned int newRow;
+	unsigned int newCol;
+	unsigned int location;
+	gridWidth = (width - 2)/4;
+	gridHeight = height/ 4;
 
-	for (int i = 0; i < width * height * 4; i += GridResolutionPixels * 4)
+	// Going on the given map rows.
+	for (int row = 0; row < height * width * 4; row += width * GridResolutionPixels * 4)
 	{
-		foundBlack = false;
-
-		for (int x = 0; x < GridResolutionPixels; x++)
+		// Going on the given map columns.
+		for (int col = 0; col < (width - 2) * 4; col += GridResolutionPixels *4)
 		{
+			// Calculating the current cell (location).
+			location = row + col;
+
+			foundBlack = false;
+
+			// Going on the square which will be equal to one cell on the Grid Map.
+			// Going on the rows.
 			for (int y = 0; y < GridResolutionPixels; y++)
 			{
-				int shifting = i + x + (y * width);
-				unsigned int r = image[shifting];
-				unsigned int g = image[shifting + 1];
-				unsigned int b = image[shifting + 2];
-
-				if (r == 0 && g == 0 && b == 0)
+				// Going on the columns.
+				for (int x = 0; x < GridResolutionPixels; x++)
 				{
-					foundBlack = true;
+					// Calculating how many cells we should skip in order to get to the cell.
+					int shifting = location + (x + (y * width)) * 4;
+					unsigned int r = image[shifting];
+					unsigned int g = image[shifting + 1];
+					unsigned int b = image[shifting + 2];
+
+					// It's enough to find one black pixel on the current square,
+					// in order to set the whole cell as black on the Grid Map.
+					if (r == 0 && g == 0 && b == 0)
+					{
+						foundBlack = true;
+					}
 				}
 			}
-		}
 
-		newLocation = i / GridResolutionPixels;
+			// Calculating the current row,column and cell eventually on the Grid.
+			newRow = (row / (int)(width * GridResolutionPixels * 4)) *
+						((width-2)/GridResolutionPixels) * 4;
+			newCol = (col / GridResolutionPixels);
+			newLocation = newRow + newCol;
 
-		if (foundBlack)
-		{
-			newImage[newLocation] = 0;
-			newImage[newLocation + 1] = 0;
-			newImage[newLocation + 2] = 0;
-			newImage[newLocation + 3] = 255;
-		}
-		else
-		{
-			newImage[newLocation] = 255;
-			newImage[newLocation + 1] = 255;
-			newImage[newLocation + 2] = 255;
-			newImage[newLocation + 3] = 255;
+			// Paint the cell.
+			if (foundBlack)
+			{
+				newImage[newLocation] = 0;
+				newImage[newLocation + 1] = 0;
+				newImage[newLocation + 2] = 0;
+				newImage[newLocation + 3] = 255;
+			}
+			else
+			{
+				newImage[newLocation] = 255;
+				newImage[newLocation + 1] = 255;
+				newImage[newLocation + 2] = 255;
+				newImage[newLocation + 3] = 255;
+			}
 		}
 	}
 
-	writePng("helloyair.png", newImage, width / GridResolutionPixels, height / GridResolutionPixels);
-
-//	double widthOfRoomInCM = 4000;
-//	int sizeOfPixelInCM = widthOfRoomInCM / width + 0.6;
-//	int squareCM = 10;
-//	int numberOfPixelsInSquare = squareCM / sizeOfPixelInCM + 0.6;
-//
-//	bool isSquareFree;
-//
-//
-//
-//
-//	// Resize the new matrix
-//	newMatrix.resize(width / numberOfPixelsInSquare);
-//
-//	for (int i = 0; i < width / numberOfPixelsInSquare; i++)
-//	{
-//		newMatrix[i].resize(height / numberOfPixelsInSquare);
-//	}
-//
-//	for (int i = 0; i <= height - numberOfPixelsInSquare; i += numberOfPixelsInSquare)
-//	{
-//		for (int j = 0; j <= width - numberOfPixelsInSquare; j += numberOfPixelsInSquare)
-//		{
-//			// Scan the square
-//			isSquareFree = true;
-//
-//			for (int ii = 0; ii < numberOfPixelsInSquare; ii++)
-//			{
-//				for (int jj = 0; jj < numberOfPixelsInSquare; jj++)
-//				{
-//					if (matrix[i + ii][j + jj] != FREE)
-//						isSquareFree = false;
-//				}
-//			}
-//
-//			if (isSquareFree)
-//				newMatrix[i / numberOfPixelsInSquare][j / numberOfPixelsInSquare] = FREE;
-//			else
-//				newMatrix[i / numberOfPixelsInSquare][j / numberOfPixelsInSquare] = BLOCK;
-//		}
-//	}
-//
-//	width = width / numberOfPixelsInSquare;
-//	height = height / numberOfPixelsInSquare;
-//
-//	for (int i = 0; i < height; i++)
-//	{
-//		for (int j = 0; j < width; j++)
-//		{
-//			std::cout <<  newMatrix[i][j] << "";
-//		}
-//		std::cout << std::endl;
-//	}
+	grid = newImage;
+	writePng("galvemoris.png", newImage, width / GridResolutionPixels, height / GridResolutionPixels);
 }

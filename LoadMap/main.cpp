@@ -17,7 +17,7 @@ int main()
 
 	map->convertToGrid();
 
-	map->loadToMatrix(filename);
+	map->loadToMatrix();
 
 	map->matrixToPng();
 

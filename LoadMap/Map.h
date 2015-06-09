@@ -13,6 +13,7 @@
 
 class Map {
 	unsigned int width, height;
+	unsigned int gridWidth, gridHeight;
 
 public:
 	enum CellIndication {FREE = 0, BLOCK = 1, UNKNOWN = 2};
@@ -20,6 +21,7 @@ public:
 	std::vector< std::vector<CellIndication> > matrix;
 	std::vector< std::vector<CellIndication> > newMatrix;
 	std::vector<unsigned char> image;
+	std::vector<unsigned char> grid;
 
 
 	Map();
@@ -27,7 +29,7 @@ public:
 
 	void loadPng(const char* filename);
 	void writePng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height);
-	void loadToMatrix(const char* filename);
+	void loadToMatrix();
 	void printMap();
 	void expand();
 	bool isCellFree(int x, int y);
