@@ -9,11 +9,13 @@ std::vector<unsigned char> image; //the raw pixels
 int main()
 {
 	Map *map = new Map();
-	const char* filename = "hospital_section.png";
+	const char* filename = "roboticLabMap.png";
 
 	map->loadPng(filename);
 
-	//map->expand();
+	map->expand();
+
+	map->convertToGrid();
 
 	map->loadToMatrix(filename);
 
@@ -22,8 +24,6 @@ int main()
 	map->printMap();
 
 	map->convertToGrid();
-
-
 
 	map->printMap();
 

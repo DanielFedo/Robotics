@@ -93,6 +93,8 @@ void Map::matrixToPng()
 
 void Map::expand()
 {
+	int robotSizeInPixels = 12;
+
 	// Init the matrix values
 	for (int i = 0; i < width * height * 4; i += 4)
 	{
@@ -103,7 +105,7 @@ void Map::expand()
 		// If its a Black pixel - expand it
 		if ((r == 0) & (g == 0) & (b == 0))
 		{
-			expandPixel(i, 3);
+			expandPixel(i, robotSizeInPixels);
 		}
 	}
 
@@ -126,15 +128,15 @@ void Map::expand()
 	writePng("AfterExpandBLACK.jpg", image, width, height);
 }
 
-void Map::expandPixel(int location, int pixelRobot)
+void Map::expandPixel(int location, int expansionPixels)
 {
-	int startLocation = (location - (width * pixelRobot * 4)) - (pixelRobot * 4);
+	int startLocation = (location - (width * expansionPixels * 4)) - (expansionPixels * 4);
 
-	int endLocation = (startLocation + (pixelRobot * (2 + 1)) * width * 4);
+	int endLocation = (startLocation + (expansionPixels * (2 + 1)) * width * 4);
 
 	for (int i = startLocation; i < endLocation; i += width * 4)
 	{
-		for (int j = 0;j < (pixelRobot * 2 + 1) * 4 && i > 0; j += 4)
+		for (int j = 0;j < (expansionPixels * 2 + 1) * 4 && i > 0; j += 4)
 		{
 			if (i + j + 3 < width * height *4)
 			{
@@ -193,55 +195,103 @@ bool Map::isCellFree(int x, int y)
 
 void Map::convertToGrid()
 {
-	double widthOfRoomInCM = 4000;
-	int sizeOfPixelInCM = widthOfRoomInCM / width + 0.6;
-	int squareCM = 10;
-	int numberOfPixelsInSquare = squareCM / sizeOfPixelInCM + 0.6;
+	double MapResolutionCM = 2.5;
+	double GridResolutionCM = 10;
+	double GridResolutionPixels = GridResolutionCM / MapResolutionCM; // 4 pixels
+	std::vector<unsigned char> newImage(((int)((width * height * 4) / GridResolutionPixels)));
+	bool foundBlack;
+	unsigned int newLocation;
 
-	bool isSquareFree;
-
-
-
-	// Resize the new matrix
-	newMatrix.resize(width / numberOfPixelsInSquare);
-
-	for (int i = 0; i < width / numberOfPixelsInSquare; i++)
+	for (int i = 0; i < width * height * 4; i += GridResolutionPixels * 4)
 	{
-		newMatrix[i].resize(height / numberOfPixelsInSquare);
-	}
+		foundBlack = false;
 
-	for (int i = 0; i <= height - numberOfPixelsInSquare; i += numberOfPixelsInSquare)
-	{
-		for (int j = 0; j <= width - numberOfPixelsInSquare; j += numberOfPixelsInSquare)
+		for (int x = 0; x < GridResolutionPixels; x++)
 		{
-			// Scan the square
-			isSquareFree = true;
-
-			for (int ii = 0; ii < numberOfPixelsInSquare; ii++)
+			for (int y = 0; y < GridResolutionPixels; y++)
 			{
-				for (int jj = 0; jj < numberOfPixelsInSquare; jj++)
+				int shifting = i + x + (y * width);
+				unsigned int r = image[shifting];
+				unsigned int g = image[shifting + 1];
+				unsigned int b = image[shifting + 2];
+
+				if (r == 0 && g == 0 && b == 0)
 				{
-					if (matrix[i + ii][j + jj] != FREE)
-						isSquareFree = false;
+					foundBlack = true;
 				}
 			}
-
-			if (isSquareFree)
-				newMatrix[i / numberOfPixelsInSquare][j / numberOfPixelsInSquare] = FREE;
-			else
-				newMatrix[i / numberOfPixelsInSquare][j / numberOfPixelsInSquare] = BLOCK;
 		}
-	}
 
-	width = width / numberOfPixelsInSquare;
-	height = height / numberOfPixelsInSquare;
+		newLocation = i / GridResolutionPixels;
 
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
+		if (foundBlack)
 		{
-			std::cout <<  newMatrix[i][j] << "";
+			newImage[newLocation] = 0;
+			newImage[newLocation + 1] = 0;
+			newImage[newLocation + 2] = 0;
+			newImage[newLocation + 3] = 255;
 		}
-		std::cout << std::endl;
+		else
+		{
+			newImage[newLocation] = 255;
+			newImage[newLocation + 1] = 255;
+			newImage[newLocation + 2] = 255;
+			newImage[newLocation + 3] = 255;
+		}
 	}
+
+	writePng("helloyair.png", newImage, width / GridResolutionPixels, height / GridResolutionPixels);
+
+//	double widthOfRoomInCM = 4000;
+//	int sizeOfPixelInCM = widthOfRoomInCM / width + 0.6;
+//	int squareCM = 10;
+//	int numberOfPixelsInSquare = squareCM / sizeOfPixelInCM + 0.6;
+//
+//	bool isSquareFree;
+//
+//
+//
+//
+//	// Resize the new matrix
+//	newMatrix.resize(width / numberOfPixelsInSquare);
+//
+//	for (int i = 0; i < width / numberOfPixelsInSquare; i++)
+//	{
+//		newMatrix[i].resize(height / numberOfPixelsInSquare);
+//	}
+//
+//	for (int i = 0; i <= height - numberOfPixelsInSquare; i += numberOfPixelsInSquare)
+//	{
+//		for (int j = 0; j <= width - numberOfPixelsInSquare; j += numberOfPixelsInSquare)
+//		{
+//			// Scan the square
+//			isSquareFree = true;
+//
+//			for (int ii = 0; ii < numberOfPixelsInSquare; ii++)
+//			{
+//				for (int jj = 0; jj < numberOfPixelsInSquare; jj++)
+//				{
+//					if (matrix[i + ii][j + jj] != FREE)
+//						isSquareFree = false;
+//				}
+//			}
+//
+//			if (isSquareFree)
+//				newMatrix[i / numberOfPixelsInSquare][j / numberOfPixelsInSquare] = FREE;
+//			else
+//				newMatrix[i / numberOfPixelsInSquare][j / numberOfPixelsInSquare] = BLOCK;
+//		}
+//	}
+//
+//	width = width / numberOfPixelsInSquare;
+//	height = height / numberOfPixelsInSquare;
+//
+//	for (int i = 0; i < height; i++)
+//	{
+//		for (int j = 0; j < width; j++)
+//		{
+//			std::cout <<  newMatrix[i][j] << "";
+//		}
+//		std::cout << std::endl;
+//	}
 }
