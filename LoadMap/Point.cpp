@@ -10,9 +10,10 @@
 #include <cstdlib>
 
 
-Point::Point(int x, int y) {
+Point::Point(int x, int y, Point *parent) {
 	this->x = x;
 	this->y = y;
+	this->parent = parent;
 }
 
 Point::~Point() {
@@ -46,7 +47,10 @@ int Point::getHScore(Point *end)
 
 void Point::calculateScores(Point *end)
 {
-	this->gScore = getGScore(parent);
+	if (parent != NULL)
+		this->gScore = getGScore(parent);
+	else
+		this->gScore = 0;
 	this->hScore = getHScore(end);
 	this->fScore = this->gScore + this->hScore;
 }

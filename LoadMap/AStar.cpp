@@ -21,9 +21,11 @@ std::list<Point*> AStar::FindPath (int startX, int startY, int goalX, int goalY,
 	std::list<Point*>::iterator listIterator;
 	std::map<Point*, Point*> cameFrom;
 
-	Point *startPoint = new Point(startX, startY);
-	Point *endPoint = new Point(goalX, goalY);
-	Point *currentPoint = new Point(-1, -1);
+	Point *startPoint = new Point(startX, startY, NULL);
+	Point *endPoint = new Point(goalX, goalY, NULL);
+	Point *currentPoint = new Point(-1, -1, NULL);
+
+	startPoint->calculateScores(endPoint);
 
 	openList.push_back(startPoint);
 
@@ -34,7 +36,7 @@ std::list<Point*> AStar::FindPath (int startX, int startY, int goalX, int goalY,
 		for (listIterator = openList.begin(); listIterator != openList.end() ;listIterator++)
 		{
 			if ((listIterator == openList.begin()) ||
-				(*listIterator)->getFScore() <= currentPoint->getFScore())
+				(*listIterator)->getFScore() < currentPoint->getFScore())
 			{
 				currentPoint = *listIterator;
 			}
@@ -66,8 +68,8 @@ std::list<Point*> AStar::FindPath (int startX, int startY, int goalX, int goalY,
 					continue;
 
 				// calculate x & adjacentY of adjacent point
-				int adjacentX = currentPoint->x + i;
-				int adjacentY = currentPoint->y + j;
+				int adjacentX = currentPoint->x + j;
+				int adjacentY = currentPoint->y + i;
 
 				// Check if this point is in the closed list
 				bool isPointInClosedList = false;
@@ -100,12 +102,12 @@ std::list<Point*> AStar::FindPath (int startX, int startY, int goalX, int goalY,
 					continue;
 
 				// Check if cell is freed for the robot
-				if (!map->isCellFree(i, j))
+				if (!map->isCellFree(adjacentX, adjacentY))
 					continue;
 
-				Point *thisPoint = new Point(adjacentX, adjacentY);
+				Point *thisPoint = new Point(adjacentX, adjacentY, currentPoint);
 				thisPoint->calculateScores(endPoint);
-				openList.push_front(thisPoint);
+				openList.push_back(thisPoint);
 
 				cameFrom[thisPoint] = currentPoint;
 			}
@@ -115,7 +117,7 @@ std::list<Point*> AStar::FindPath (int startX, int startY, int goalX, int goalY,
 	Point *pathCurrent = currentPoint;
 	finalPath.push_back(currentPoint);
 
-	while (pathCurrent->isEqual(startPoint))
+	while (!pathCurrent->isEqual(startPoint))
 	{
 		pathCurrent = cameFrom[pathCurrent];
 		finalPath.push_back(pathCurrent);

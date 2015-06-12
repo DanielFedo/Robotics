@@ -51,23 +51,11 @@ void Map::loadToMatrix()
 
 		matrix[(i / 4) / gridWidth][(i / 4) % gridWidth] = cell;
 
+		// TODO: Remove in final version
 		if ((i / 4) % gridWidth == 0)
 			std::cout << std::endl;
 
 		std::cout << cell;
-
-
-
-	}
-
-	for (int i = 0; i < gridHeight; i++)
-	{
-		for (int j = 0; j < gridWidth; j++)
-		{
-			std::cout <<  matrix[i][j] << "";
-		}
-
-		std::cout << std::endl;
 	}
 }
 
@@ -195,10 +183,7 @@ void Map::printMap()
 
 bool Map::isCellFree(int x, int y)
 {
-	if (matrix[x][y] == FREE)
-		return true;
-	else
-		return false;
+	return (matrix[y][x] == FREE);
 }
 
 void Map::convertToGrid()

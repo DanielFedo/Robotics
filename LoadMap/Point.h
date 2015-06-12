@@ -20,7 +20,7 @@ public:
 
 	Point *parent;
 
-	Point(int x, int y);
+	Point(int x, int y, Point *parent);
 	virtual ~Point();
 
 	int getGScore();
