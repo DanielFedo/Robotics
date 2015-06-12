@@ -1,19 +1,27 @@
 /*
- * Map.cpp
+ * map.cpp
  *
- *  Created on: Mar 31, 2015
+ *  Created on: Jun 12, 2015
  *      Author: colman
  */
 
 #include "Map.h"
+#include "Point.h"
 
 Map::Map() {
-	// TODO Auto-generated constructor stub
-
+	// TODO REMOVE!!!
+	robotSizeInPixels = 12;
 }
 
-Map::~Map() {
-	// TODO Auto-generated destructor stub
+Point * Map::getLocationInWorld(Point *locationInMap) {
+	double d = mapResolutionCM / gridResolutionCM;
+	Point *newPoint = new Point(locationInMap->x * d, locationInMap->y * d, NULL);
+	return newPoint;
+}
+
+Point * Map::getLocationInMap(Point *locationInWorld) {
+	double d = mapResolutionCM / gridResolutionCM;
+	Point *newPoint = new Point(locationInWorld->x / d, locationInWorld->y / d, NULL);
 }
 
 // Loads a png file into a matrix
@@ -89,8 +97,6 @@ void Map::matrixToPng()
 
 void Map::expand()
 {
-	int robotSizeInPixels = 12;
-
 	// Init the matrix values
 	for (int i = 0; i < width * height * 4; i += 4)
 	{
@@ -132,7 +138,7 @@ void Map::expandPixel(int location, int expansionPixels)
 
 	for (int i = startLocation; i < endLocation; i += width * 4)
 	{
-		for (int j = 0; j < (expansionPixels * 2 + 1) * 4 && i > 0; j += 4)
+		for (int j = 0;j < (expansionPixels * 2 + 1) * 4 && i > 0; j += 4)
 		{
 			if (i + j + 3 < width * height *4)
 			{
@@ -189,17 +195,15 @@ bool Map::isCellFree(int x, int y)
 void Map::convertToGrid()
 {
 	// Define variables.
-	double MapResolutionCM = 2.5;
-	double GridResolutionCM = 10;
-	double GridResolutionPixels = GridResolutionCM / MapResolutionCM; // 4 pixels
+	double GridResolutionPixels = gridResolutionCM / mapResolutionCM; // 4 pixels
 	std::vector<unsigned char> newImage(((int)((width * height * 4) / GridResolutionPixels)));
 	bool foundBlack;
 	unsigned int newLocation;
 	unsigned int newRow;
 	unsigned int newCol;
 	unsigned int location;
-	gridWidth = (width - 2)/4;
-	gridHeight = height/ 4;
+	gridWidth = (width - 2) / GridResolutionPixels;
+	gridHeight = height / GridResolutionPixels;
 
 	// Going on the given map rows.
 	for (int row = 0; row < height * width * 4; row += width * GridResolutionPixels * 4)

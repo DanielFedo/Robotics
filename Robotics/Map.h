@@ -1,7 +1,7 @@
 /*
  * Map.h
  *
- *  Created on: Mar 31, 2015
+ *  Created on: Jun 12, 2015
  *      Author: colman
  */
 
@@ -10,22 +10,29 @@
 
 #include "lodepng.h"
 #include <iostream>
+#include <vector>
+#include "Point.h"
+
+using namespace std;
 
 class Map {
+public:
 	unsigned int width, height;
 	unsigned int gridWidth, gridHeight;
+	double mapResolutionCM;
+	double gridResolutionCM;
+	int robotSizeInPixels;
 
 public:
 	enum CellIndication {FREE = 0, BLOCK = 1, UNKNOWN = 2};
 
-	std::vector< std::vector<CellIndication> > matrix;
-	std::vector< std::vector<CellIndication> > newMatrix;
-	std::vector<unsigned char> image;
-	std::vector<unsigned char> grid;
+	vector< vector<CellIndication> > matrix;
+	vector< vector<CellIndication> > newMatrix;
+	vector<unsigned char> image;
+	vector<unsigned char> grid;
 
 
 	Map();
-	virtual ~Map();
 
 	void loadPng(const char* filename);
 	void writePng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height);
@@ -35,7 +42,8 @@ public:
 	bool isCellFree(int x, int y);
 	void convertToGrid();
 	void matrixToPng();
-
+	Point* getLocationInWorld(Point *locatioInMap);
+	Point* getLocationInMap(Point *locatioInWorld);
 
 private:
 	void expandPixel(int location, int pixelAmount);
