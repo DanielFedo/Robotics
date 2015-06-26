@@ -9,7 +9,8 @@
 
 Map::Map() {
 	// TODO Auto-generated constructor stub
-
+	double MapResolutionCM = 2.5;
+	double GridResolutionCM = 10;
 }
 
 Map::~Map() {

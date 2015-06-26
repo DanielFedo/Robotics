@@ -7,12 +7,30 @@
 
 #include "Robot.h"
 
+#include <libplayerc++/playerc++.h>
+
+using namespace PlayerCc;
+
 Robot::Robot() {
-	// TODO Auto-generated constructor stub
+	pc("localhost", 6665);
 
+	pp = new Position2dProxy(pc);
+	lp = new LaserProxy(pc);
+
+	for(int read=0; read<15; read++){
+		pc.Read();
+	}
+	pp.SetMotorEnable(true);
+
+	posX = 0.0;
+	posY = 0.0;
+	posYaw = 0.0;
 }
 
-Robot::~Robot() {
-	// TODO Auto-generated destructor stub
+Robot::Read(){
+	pc.Read();
 }
 
+void Robot::setSpeed(float speed, float angularSpee){
+	pp.SetSpeed(speed,angularSpee);
+}

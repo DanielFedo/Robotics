@@ -7,11 +7,22 @@
 
 #ifndef ROBOT_H_
 #define ROBOT_H_
+#include <libplayerc++/playerc++.h>
+
+using namespace PlayerCc;
 
 class Robot {
-public:
-	Robot();
-	virtual ~Robot();
+	private:
+		PlayerClient pc;
+		Position2dProxy pp;
+		LaserProxy lp;
+		int posX;
+		int posY;
+		int posYaw;
+	public:
+		Robot();
+		void Read();
+		void setSpeed(float speed, float angularSpeed);
 };
 
 #endif /* ROBOT_H_ */

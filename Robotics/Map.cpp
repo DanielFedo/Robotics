@@ -11,6 +11,8 @@
 Map::Map() {
 	// TODO REMOVE!!!
 	robotSizeInPixels = 12;
+	mapResolutionCM = 2.5;
+	gridResolutionCM = 10;
 }
 
 Point * Map::getLocationInWorld(Point *locationInMap) {
