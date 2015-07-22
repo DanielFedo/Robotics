@@ -44,8 +44,12 @@ ConfigurationManager::ConfigurationManager(const char* configurationFilePath) {
 	this->xStart = atoi(startLocation.substr(0, startLocation.find_first_of(' ')).c_str());
 
 	// y start location
-	startLocation = startLocation.substr(0, startLocation.find_first_of(' ')).c_str();
+	startLocation = startLocation.substr(0, startLocation.find_first_of(' ') + 1);
 	this->yStart = atoi(startLocation.c_str());
+
+	// Yaw start location
+	startLocation = startLocation.substr(startLocation.find_first_of(' ') + 1);
+	this->yawStart = atoi(startLocation.c_str());
 
 	// X end location
 	std::string goal = fileData[2];
@@ -66,6 +70,8 @@ ConfigurationManager::ConfigurationManager(const char* configurationFilePath) {
 	// Map resolution
 	std::string mapResolutionCM = fileData[4];
 	this->mapResolution = atof(mapResolutionCM.c_str());
+
+
 
 	// Fix according to resolution
 	this->robotLength = this->robotLength / this->mapResolution;

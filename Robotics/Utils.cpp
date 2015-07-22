@@ -32,3 +32,19 @@ int Utils::RadiansToIndex(double radians)
 	int degrees = radians * 180 / PI;
 	return DegreesToIndex(degrees);
 }
+
+double Utils::DegreeToRadian(double degree){
+	 return ((degree) * (M_PI / 180.0));
+}
+
+double Utils::RadianToDegree(double radian){
+	 return ((radian) * (180.0 / M_PI));
+}
+
+double Utils::PixelToMeter(double inPixel){
+	return inPixel*Utils::configurationManager->mapResolution/100;
+}
+
+static double MeterToPixel(double inMeter){
+	return inMeter*100/Utils::configurationManager->mapResolution;
+}

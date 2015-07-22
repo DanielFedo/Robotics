@@ -19,11 +19,16 @@ class Robot {
 		int posX;
 		int posY;
 		int posYaw;
+		double startYaw;
 	public:
 		Robot();
 		void Read();
 		void setSpeed(float speed, float angularSpeed);
 		float getLaserRead(int index);
+	    void setOdometry();
+		double getXPos();
+		double getYPos();
+		double getYaw();
 };
 
 #endif /* ROBOT_H_ */

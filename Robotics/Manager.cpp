@@ -12,7 +12,10 @@ Manager::Manager(Robot *robot){
 }
 
 void Manager::Run(){
-    this->robot->Read();
+	for (int i = 0; i < 15; i++) {
+		robot->setOdometry();
+		robot->Read();
+	}
 
     // Creating behaviors
     Behaviors ** behaviors = new Behaviors*[4];

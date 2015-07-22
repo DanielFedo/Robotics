@@ -9,6 +9,8 @@
 
 
 Robot::Robot() {
+	startYaw = Utils::DegreeToRadian(Utils::configurationManager->yawStart);
+
 	// Connect to the emulator
 	pc = new PlayerClient("localhost",6665);
 
@@ -24,9 +26,8 @@ Robot::Robot() {
 		pc->Read();
 	}
 
-	posX = 0.0;
-	posY = 0.0;
-	posYaw = 0.0;
+	// Init robot yaw and odometry
+	pp->SetOdometry(0,0,startYaw);
 }
 
 
@@ -40,4 +41,24 @@ void Robot::setSpeed(float speed, float angularSpeed){
 
 float Robot::getLaserRead(int index){
 	return lp->GetRange(index);
+}
+
+void Robot::setOdometry()
+{
+	pp->SetOdometry(0,0,startYaw);
+}
+
+double Robot::getXPos()
+{
+	return Utils::configurationManager->xStart + Utils::MeterToPixel(pp->GetXPos());
+}
+
+double Robot::getYPos()
+{
+	return Utils::configurationManager->yStart - Utils::MeterToPixel(pp->GetYPos());
+}
+
+double Robot::getYaw()
+{
+	return Utils::RadianToDegree(pp->GetYaw());
 }
