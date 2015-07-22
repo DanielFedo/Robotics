@@ -49,7 +49,7 @@ ConfigurationManager::ConfigurationManager(const char* configurationFilePath) {
 
 	// X end location
 	std::string goal = fileData[2];
-	this->xTarget = atoi(goal.substr(0, goal.find_first_of(' ')).c_str())
+	this->xTarget = atoi(goal.substr(0, goal.find_first_of(' ')).c_str());
 
 	// Y end location
 	goal = goal.substr(goal.find_first_of(' ')).c_str();
@@ -57,7 +57,7 @@ ConfigurationManager::ConfigurationManager(const char* configurationFilePath) {
 
 	// Robot size
 	std::string robotSize = fileData[3];
-	this->robotLength = fileData[3];
+	this->robotLength = atoi(robotSize.substr(0, robotSize.find_first_of(' ')).c_str());
 
 	// Robot with
 	robotSize = robotSize.substr(robotSize.find_first_of(' ') + 1);

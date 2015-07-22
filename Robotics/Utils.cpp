@@ -7,6 +7,8 @@
 
 #include "Utils.h"
 
+ConfigurationManager* configurationManager = new ConfigurationManager("parameters.txt");
+
 int Utils::DegreesToIndex(int degrees)
 {
 	int index = degrees * Utils::DEGREES_INDEX_RATIO;

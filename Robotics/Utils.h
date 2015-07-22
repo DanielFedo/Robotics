@@ -10,6 +10,8 @@
 
 #define PI 3.1415926536
 
+#include "ConfigurationManager.h"
+
 class Utils {
 public:
 	Utils();
