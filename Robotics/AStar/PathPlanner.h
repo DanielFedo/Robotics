@@ -13,7 +13,7 @@
 #include <list>
 #include <map>;
 #include "Point.h"
-#include "Map.h"
+#include "../Map.h"
 
 class PathPlanner {
 public:

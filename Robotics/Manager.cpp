@@ -7,33 +7,40 @@
 
 #include "Manager.h"
 
-Manager::Manager() {
-	// TODO Auto-generated constructor stub
-
-}
-
-Manager::Manager(Robot *robot, Behaviors *startBehavior){
+Manager::Manager(Robot *robot){
 	this->robot = robot;
-	this->currBehavior = startBehavior;
 }
 
 void Manager::Run(){
     this->robot->Read();
 
+    // Creating behaviors
+    Behaviors ** behaviors = new Behaviors*[4];
+    behaviors[0] = new GoForward(robot);
+    behaviors[1] = new TurnLeft(robot);
+    behaviors[2] = new TurnRight(robot);
+
+    // Connectiong behaviors
+    behaviors[0]->addNext(behaviors[1]);
+    behaviors[0]->addNext(behaviors[2]);
+    behaviors[1]->addNext(behaviors[0]);
+    behaviors[2]->addNext(behaviors[0]);
+
+    this->currBehavior = behaviors[0];
+
     if (!currBehavior->startCond()) {
-        cout << "Cannot start the first behavior" << endl;
+        std::cout << "Cannot start the first behavior" << std::endl;
         return;
     }
 
     while (currBehavior != NULL) {
         currBehavior->action();
         robot->Read();
- 
         // Update particles...
 
         if (currBehavior->stopCond()) {
             currBehavior = currBehavior->selectNext();
         }
     }
-    cout << "Manager stopped" << endl;
+    std::cout << "Manager stopped" << std::endl;
 }

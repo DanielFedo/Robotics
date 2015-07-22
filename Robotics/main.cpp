@@ -3,7 +3,9 @@ using namespace std;
 #include "lodepng.h"
 #include <iostream>
 #include "Map.h"
-#include "PathPlanner.h"
+#include "AStar/PathPlanner.h"
+#include "WaypointsManager.h"
+#include "Manager.h"
 
 std::vector<unsigned char> image; //the raw pixels
 
@@ -27,6 +29,8 @@ int main()
 	PathPlanner *astar = new PathPlanner();
 	std::list<Point*> path;
 
+	//WaypointsManager wayPoint = new WaypointsManager();
+
 	int startLocationX = 362 / 4;
 	int startLocationY = 305 / 4;
 	int goalX = 169 / 4;
@@ -39,6 +43,12 @@ int main()
 	{
 		std::cout << " [" << (*listIterator)->x << "," << (*listIterator)->y << "] " << endl;
 	}
+
+	// Create our robot
+	Robot *robot = new Robot();
+
+	Manager *manager = new Manager(robot);
+	manager->Run();
 
 	return 0;
 }

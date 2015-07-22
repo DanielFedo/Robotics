@@ -6,7 +6,7 @@
  */
 
 #include "Map.h"
-#include "Point.h"
+#include "AStar/Point.h"
 
 Map::Map() {
 	// TODO REMOVE!!!

@@ -7,30 +7,37 @@
 
 #include "Robot.h"
 
-#include <libplayerc++/playerc++.h>
-
-using namespace PlayerCc;
 
 Robot::Robot() {
-	pc("localhost", 6665);
+	// Connect to the emulator
+	pc = new PlayerClient("localhost",6665);
 
+	// Init poistion proxy
 	pp = new Position2dProxy(pc);
+
+	// Init laser proxy
 	lp = new LaserProxy(pc);
 
+	pp->SetMotorEnable(true);
+
 	for(int read=0; read<15; read++){
-		pc.Read();
+		pc->Read();
 	}
-	pp.SetMotorEnable(true);
 
 	posX = 0.0;
 	posY = 0.0;
 	posYaw = 0.0;
 }
 
-Robot::Read(){
-	pc.Read();
+
+void Robot::Read(){
+	pc->Read();
 }
 
-void Robot::setSpeed(float speed, float angularSpee){
-	pp.SetSpeed(speed,angularSpee);
+void Robot::setSpeed(float speed, float angularSpeed){
+	pp->SetSpeed(speed,angularSpeed);
+}
+
+float Robot::getLaserRead(int index){
+	return lp->GetRange(index);
 }

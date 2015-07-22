@@ -8,7 +8,7 @@
 #ifndef GOFORWARD_H_
 #define GOFORWARD_H_
 
-#include "Robot.h"
+#include "../Robot.h"
 #include "Behaviors.h"
 
 class GoForward: public Behaviors {

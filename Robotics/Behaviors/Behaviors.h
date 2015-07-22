@@ -8,27 +8,32 @@
 #ifndef BEHAVIORS_H_
 #define BEHAVIORS_H_
 
-#include "Robot.h"
+#include "../Robot.h"
 #include <vector> 
 #include <stdlib.h>
+#include "../Utils.h"
 using namespace std;
 
 class Behaviors {
+
 private:
     vector<Behaviors *> nextBehaviors;
 protected:
+
     Robot *robot;
     int numNext;
-    Behaviors next;
+
 public:
-    virtual bool startCond() = 0;
-    virtual bool stopCond() = 0;
-    virtual void action() = 0;
+    Behaviors(Robot *robot);
+
+    virtual bool startCond();
+    virtual void action();
+    virtual bool stopCond();
+
 	Behaviors *addNext(Behaviors *beh);
 	Behaviors *selectNext();
-	bool isContinue();
-	Behaviors();
-	Behaviors(Robot *robot);
+
+	bool canGoFroward();
 	int degToIndex(double deg);
 	int indexToDeg(double index);
 };

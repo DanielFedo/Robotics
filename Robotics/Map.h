@@ -11,7 +11,7 @@
 #include "lodepng.h"
 #include <iostream>
 #include <vector>
-#include "Point.h"
+#include "AStar/Point.h"
 
 using namespace std;
 

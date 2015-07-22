@@ -12,7 +12,7 @@
 
 class TurnLeft: public Behaviors {
 public:
-	TurnLeft();
+	TurnLeft(Robot *robot);
 
 	bool startCond();
 	bool stopCond();

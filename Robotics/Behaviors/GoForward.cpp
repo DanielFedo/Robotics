@@ -3,11 +3,12 @@
 GoForward::GoForward(Robot* robot):Behaviors(robot) {}
 
 bool GoForward::startCond(){
-	return isContinue();
+	return canGoFroward();
 }
 
+// Stop when there is obstacle
 bool GoForward::stopCond(){
-	if (isContinue() == false)	{
+	if (canGoFroward() == false)	{
 		robot->setSpeed(0.0,0.0);
 		return true;
 	}

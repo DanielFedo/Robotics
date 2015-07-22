@@ -9,7 +9,10 @@
 #define MANAGER_H_
 
 #include "Robot.h"
-#include "Behaviors.h"
+#include "Behaviors/Behaviors.h"
+#include "Behaviors/GoForward.h"
+#include "Behaviors/TurnLeft.h"
+#include "Behaviors/TurnRight.h"
 #include <stdlib.h>
 
 class Manager {
@@ -17,8 +20,7 @@ private:
     Robot *robot;
     Behaviors *currBehavior;
 public:
-    Manager();
-    Manager(Robot *robot, Behaviors *startBehavior);
+    Manager(Robot *robot);
     void Run();
 };
 

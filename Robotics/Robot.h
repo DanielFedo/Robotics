@@ -13,9 +13,9 @@ using namespace PlayerCc;
 
 class Robot {
 	private:
-		PlayerClient pc;
-		Position2dProxy pp;
-		LaserProxy lp;
+		PlayerClient* pc;
+		Position2dProxy* pp;
+		LaserProxy* lp;
 		int posX;
 		int posY;
 		int posYaw;
@@ -23,6 +23,7 @@ class Robot {
 		Robot();
 		void Read();
 		void setSpeed(float speed, float angularSpeed);
+		float getLaserRead(int index);
 };
 
 #endif /* ROBOT_H_ */

@@ -7,23 +7,27 @@
 
 #include "TurnRight.h"
 
-TurnRight::TurnRight() {
-	// TODO Auto-generated constructor stub
-
+TurnRight::TurnRight(Robot *robot) : Behaviors(robot)
+{
 }
 
-bool TurnRight::startCond(){
-	return isContinue();
+bool TurnRight::startCond()
+{
+	return !canGoFroward();
 }
 
-bool TurnRight::stopCond(){
-	if (isContinue() == false)	{
+bool TurnRight::stopCond()
+{
+	if (canGoFroward() == false)
+	{
 		robot->setSpeed(0.0,0.0);
 		return true;
 	}
+
 	return false;
 }
 
-void TurnRight::action() {
+void TurnRight::action()
+{
 	robot->setSpeed(0.0, 1.0);
 }
