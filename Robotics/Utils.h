@@ -15,6 +15,7 @@
 class Utils {
 public:
 	Utils();
+	static ConfigurationManager* configurationManager;
 
 	static const float DEGREES_INDEX_RATIO = 666 / 270;
 	static const float MIDDLE_INDEX = 666 / 2;
@@ -26,6 +27,11 @@ public:
 
 	static double IndexToRadians(int index);
 	static int RadiansToIndex(double radians);
+
+	// Particles
+	static const int PARTICLES_NUMBER = 150;
+	static const double MIN_BELIEF_THRESHOLD = 0.2;
+	static const double GOOD_BELIEF_THRESHOLD = 0.7;
 };
 
 #endif /* UTILS_H_ */
