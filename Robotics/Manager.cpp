@@ -39,6 +39,8 @@ void Manager::Run(){
     while (currBehavior != NULL) {
         currBehavior->action();
         robot->Read();
+        robot->Read();
+
         // Update particles...
 
         if (currBehavior->stopCond()) {

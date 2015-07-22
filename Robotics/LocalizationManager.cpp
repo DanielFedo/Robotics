@@ -7,19 +7,20 @@
 
 #include "LocalizationManager.h"
 
-LocalizationManager::LocalizationManager() {
-	int numToGenerate = 500;
-	int posX;
-	int posY;
-	int yaw;
+LocalizationManager::LocalizationManager()
+{
+	int xStartLocation = Utils::configurationManager->xStart;
+	int yStartLocation = Utils::configurationManager->yStart;
+	int yawStartLocation = Utils::configurationManager->yawStart;
 
-	for (int i = 0; i < numToGenerate; i++)
+	// Create the first particle
+	Particle* firstParticle = new Particle(xStartLocation, yStartLocation, yawStartLocation, 1);
+	particles.push_back(firstParticle);
+
+	// Create all particles
+	for(int i = 1; i < Utils::PARTICLES_NUMBER; i++)
 	{
-		posX = (rand() % 550);
-		posY = (rand() % 380);
-		yaw = (rand() % 240);
-
-		Particle *p = new Particle(posX, posY, yaw);
-		this->particles[i] = p;
+		Particle* currentParticle = firstParticle->createParticle();
+		particles.push_back(currentParticle);
 	}
 }
