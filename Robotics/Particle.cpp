@@ -12,12 +12,11 @@ Particle::Particle() {
 
 }
 
-Particle::Particle(double xPos, double yPos, double yaw){
+Particle::Particle(double xPos, double yPos, double yaw, double belief){
 	this->xPos = xPos;
 	this->yPos = yPos;
 	this->yaw = yaw;
-
-	this->belief = 0; // ?
+	this->belief = belief;
 }
 
 void Particle::printPosition(){
@@ -29,6 +28,13 @@ void Particle::update(double deltaX, double deltaY, double deltaYaw){
 	this->yPos += deltaY;
 	this->yaw += deltaYaw;
 }
+
+Particle* Particle::createParticle() {
+	int xPos = this->xPos += pow(-1, rand());
+	int yPos = this->yPos += pow(-1, rand());
+	int yaw = this->yaw += (rand() % 30 - 15);
+
+	return new Particle(xPos,yPos, yaw this->belief-0.01);
 
 double Particle::getBelief(){
 	double newBelief = 0;

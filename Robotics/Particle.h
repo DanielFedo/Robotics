@@ -9,6 +9,13 @@
 #define PARTICLE_H_
 
 #include <iostream>
+#include <vector>
+#include "Robot.h"
+#include "Utils.h"
+#include <math.h>
+#include <cmath>
+#include <cstdlib>
+#include "Map.h"
 
 class Particle {
 private:
@@ -17,9 +24,10 @@ private:
 public:
 	Particle();
 
-	Particle(double xPos, double yPos, double yaw);
+	Particle(double xPos, double yPos, double yaw, double belif);
     double getBelief();
     void update(double deltaX, double deltaY, double deltaYaw);
+    Particle* createParticle();
     void printPosition();
 };
 
