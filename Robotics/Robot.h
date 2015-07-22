@@ -8,6 +8,7 @@
 #ifndef ROBOT_H_
 #define ROBOT_H_
 #include <libplayerc++/playerc++.h>
+#include "Utils.h"
 
 using namespace PlayerCc;
 

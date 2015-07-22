@@ -32,6 +32,9 @@ public:
 	static double PixelToMeter(double inPixel);
 	static double MeterToPixel(double inMeter);
 
+	static double DegreeToRadian(double degree);
+	static double RadianToDegree(double radian);
+
 	// Particles
  	static const int PARTICLES_NUMBER = 150;
 	static const double MIN_BELIEF_THRESHOLD = 0.2;

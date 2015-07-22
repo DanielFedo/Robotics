@@ -9,7 +9,7 @@
 
 
 Robot::Robot() {
-	startYaw = Utils::DegreeToRadian(Utils::configurationManager->yawStart);
+	startYaw = Utils::DegreesToIndex(Utils::configurationManager->yawStart);
 
 	// Connect to the emulator
 	pc = new PlayerClient("localhost",6665);
@@ -60,5 +60,5 @@ double Robot::getYPos()
 
 double Robot::getYaw()
 {
-	return Utils::RadianToDegree(pp->GetYaw());
+	return Utils::RadianToDegree(pp->y );
 }
