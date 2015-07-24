@@ -36,12 +36,34 @@ void Manager::Run(){
         return;
     }
 
+	double prevX = Utils::configurationManager->xStart;
+	double prevY = Utils::configurationManager->yStart;
+	double prevYaw = Utils::configurationManager->yawStart;
+    double newX, newY, newYaw;
+
     while (currBehavior != NULL) {
         currBehavior->action();
         robot->Read();
         robot->Read();
 
+        // Get new robot location
+		newX = robot->getXPos();
+		newY = robot->getYPos();
+		newYaw = robot->getYaw();
+
+		// Check if the robot moved
+		double deltaX = newX - prevX;
+		double deltaY = newY - prevY;
+		double deltaYaw = newYaw - prevYaw;
+		if (deltaX == 0 &&  deltaY == 0 && deltaYaw == 0)
+			continue;
+
         // Update particles...
+		//LocalizationManager.updateParticles(_robot, deltaX, deltaY, deltaYaw);
+		//Particle* best = _localizationManager.getBestParticle();
+		//LocalizationManager.createParticles();
+
+		cout << "Robot's position: " << newX << ", " << newY << endl;
 
         if (currBehavior->stopCond()) {
             currBehavior = currBehavior->selectNext();
@@ -49,3 +71,4 @@ void Manager::Run(){
     }
     std::cout << "Manager stopped" << std::endl;
 }
+

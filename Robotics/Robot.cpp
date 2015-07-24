@@ -60,5 +60,5 @@ double Robot::getYPos()
 
 double Robot::getYaw()
 {
-	return Utils::RadianToDegree(pp->y );
+	return Utils::RadianToDegree(pp->GetYaw());
 }

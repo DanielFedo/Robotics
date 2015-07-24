@@ -19,11 +19,16 @@ private:
 	std::list<Point *> wayPoints;
 	Robot* robot;
 	Point* curPoint;
+	int index;
 public:
 	WaypointsManager(std::list<Point*>, Robot* robot);
 	std::list<Point *> getWayPoints();
 	Point getNextPoint();
 	void directRobot();
+	Point* getCurrWayPoint();
+	bool isInWayPoint(double x,double y);
+	bool isLastWayPoint();
+	Point* getNextWayPoint();
 };
 
 #endif /* WAYPOINTSMANAGER_H_ */
