@@ -21,6 +21,11 @@ private:
 	Point* curPoint;
 	int index;
 public:
+	static WaypointsManager* instance;
+
+	static WaypointsManager* getInstance();
+	static WaypointsManager* init(std::list<Point*> path, Robot* robot);
+
 	WaypointsManager(std::list<Point*>, Robot* robot);
 	std::vector<Point *> getWayPoints();
 	Point getNextPoint();

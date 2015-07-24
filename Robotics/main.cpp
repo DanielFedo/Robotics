@@ -29,7 +29,7 @@ int main()
 	PathPlanner *astar = new PathPlanner();
 	std::list<Point*> path;
 
-	//WaypointsManager wayPoint = new WaypointsManager();
+
 
 	int startLocationX = 362 / 4;
 	int startLocationY = 305 / 4;
@@ -46,6 +46,8 @@ int main()
 
 	// Create our robot
 	Robot *robot = new Robot();
+
+	WaypointsManager::init(path, robot);
 
 	Manager *manager = new Manager(robot);
 	manager->Run();

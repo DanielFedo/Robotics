@@ -7,8 +7,19 @@
 
 #include "WaypointsManager.h"
 
+static WaypointsManager* WaypointsManager::getInstance()
+{
+	return instance;
+}
+
+static WaypointsManager* WaypointsManager::init(std::list<Point*> path, Robot* robot)
+{
+	instance = new WaypointsManager(path, robot);
+}
+
 WaypointsManager::WaypointsManager(std::list<Point*> path, Robot* robot)
 {
+	this->index = 0;
 	this->robot = robot;
 	std::list<Point*>::iterator listIterator;
 	int i = 0;
@@ -20,7 +31,6 @@ WaypointsManager::WaypointsManager(std::list<Point*> path, Robot* robot)
 		Point* tempPoint = (*listIterator);
 
 		if (i % 3 == 0 || i == path.size() -1)	{
-			// TODO: push back or push front?
 			this->wayPoints.push_back(tempPoint);
 		}
 	}
