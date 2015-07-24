@@ -12,6 +12,8 @@
 #include <iostream>
 #include <vector>
 #include "AStar/Point.h"
+#include "Utils.h"
+
 
 using namespace std;
 
@@ -23,11 +25,8 @@ public:
 	double gridResolutionCM;
 	int robotSizeInPixels;
 
-public:
-	enum CellIndication {FREE = 0, BLOCK = 1, UNKNOWN = 2};
-
-	vector< vector<CellIndication> > matrix;
-	vector< vector<CellIndication> > newMatrix;
+	vector< vector<Utils::CELL_STATUS> > matrix;
+	vector< vector<Utils::CELL_STATUS> > newMatrix;
 	vector<unsigned char> image;
 	vector<unsigned char> grid;
 	static Map* instance;
@@ -35,7 +34,6 @@ public:
 	static Map* getInstance();
 
 	Map();
-
 	void loadPng(const char* filename);
 	void writePng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height);
 	void loadToMatrix();

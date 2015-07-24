@@ -7,13 +7,16 @@
 
 #include "Map.h"
 #include "AStar/Point.h"
+#include "Utils.h"
+
+Map* Map::instance = NULL;
 
 Map* Map::getInstance(){
-	if (instance == NULL){
-		instance = new Map();
+	if (Map::instance == NULL){
+		Map::instance = new Map();
 	}
 
-	return instance;
+	return Map::instance;
 }
 
 Map::Map() {
@@ -38,17 +41,17 @@ Point * Map::getLocationInMap(Point *locationInWorld) {
 void Map::loadToMatrix()
 {
 	// Resize the matrix to match the image size
-	matrix.resize(gridWidth);
+	matrix.resize(this->gridWidth);
 
-	for (int i = 0; i < gridWidth; i++)
+	for (int i = 0; i < this->gridWidth; i++)
 	{
-		matrix[i].resize(gridHeight);
+		matrix[i].resize(this->gridHeight);
 	}
 
 	int r;
 	int g;
 	int b;
-	CellIndication cell;
+	Utils::CELL_STATUS cell;
 
 	// Init the matrix values
 	for (int i = 0; i < gridWidth * gridHeight * 4; i += 4)
@@ -59,13 +62,13 @@ void Map::loadToMatrix()
 
 		// Black pixel
 		if ((r == 0) & (g == 0) & (b == 0))
-			cell = BLOCK;
+			cell = Utils::BLOCK;
 		// White pixel
 		else if ((r == 255) & (g == 255) & (b == 255))
-			cell = FREE;
+			cell = Utils::FREE;
 		// Unknown Pixel
 		else
-			cell = UNKNOWN;
+			cell = Utils::UNKNOWN;
 
 		matrix[(i / 4) / gridWidth][(i / 4) % gridWidth] = cell;
 
@@ -85,7 +88,7 @@ void Map::matrixToPng()
 		{
 			std::cout << (i * 4 * width) + (j * 4) << ",";
 
-			if (matrix[i][j] == FREE)
+			if (matrix[i][j] == Utils::FREE)
 			{
 				image[(i * 4 * width) + (j * 4)] = 255;
 				image[(i * 4 * width) + (j * 4) + 1] = 255;
@@ -199,7 +202,7 @@ void Map::printMap()
 
 bool Map::isCellFree(int x, int y)
 {
-	return (matrix[y][x] == FREE);
+	return (matrix[y][x] == Utils::FREE);
 }
 
 void Map::convertToGrid()

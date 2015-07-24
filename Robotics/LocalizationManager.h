@@ -11,7 +11,7 @@ public:
     LocalizationManager();
 
     vector<Particle *> particles;
-    void update(double deltaX, double deltaY, double deltaYaw);
+    void updateParticles(Robot* robot, double deltaX, double deltaY, double deltaYaw);
     Particle *getBestParticle();
 	void createParticles();
 };

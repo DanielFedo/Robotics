@@ -26,10 +26,10 @@ WaypointsManager::WaypointsManager(std::list<Point*> path, Robot* robot)
 	}
 
     this->curPoint = *(this->wayPoints.begin());
-	this->wayPoints.pop_front();
+	this->wayPoints.pop_back();
 }
 
-std::list<Point *> WaypointsManager::getWayPoints(){
+std::vector<Point *> WaypointsManager::getWayPoints(){
 	return this->wayPoints;
 }
 

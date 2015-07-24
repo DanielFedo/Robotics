@@ -16,13 +16,13 @@
 
 class WaypointsManager {
 private:
-	std::list<Point *> wayPoints;
+	std::vector<Point *> wayPoints;
 	Robot* robot;
 	Point* curPoint;
 	int index;
 public:
 	WaypointsManager(std::list<Point*>, Robot* robot);
-	std::list<Point *> getWayPoints();
+	std::vector<Point *> getWayPoints();
 	Point getNextPoint();
 	void directRobot();
 	Point* getCurrWayPoint();

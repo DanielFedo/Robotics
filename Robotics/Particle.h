@@ -20,14 +20,16 @@
 class Particle {
 private:
 	double xPos, yPos, yaw;
-	double belief;
 public:
+	double belief;
 	Particle();
 
 	Particle(double xPos, double yPos, double yaw, double belif);
-    double getBelief();
-    void update(double deltaX, double deltaY, double deltaYaw);
+    double update(int deltaX, int deltaY, int deltaYaw, Robot* robot);
+    double probByMove(int deltaX, int deltaY, int deltaYaw);
+    double probByMeasure(Robot* robot);
     Particle* createParticle();
+    double convertLaserIndexToLaserAngle(int index);
     void printPosition();
 };
 

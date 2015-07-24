@@ -7,7 +7,7 @@
 
 #include "Utils.h"
 
-ConfigurationManager* configurationManager = new ConfigurationManager("parameters.txt");
+ConfigurationManager* Utils::configurationManager = new ConfigurationManager("parameters.txt");
 
 int Utils::DegreesToIndex(int degrees)
 {
@@ -41,10 +41,11 @@ double Utils::RadianToDegree(double radian){
 	 return ((radian) * (180.0 / M_PI));
 }
 
-double Utils::PixelToMeter(double inPixel){
-	return inPixel*Utils::configurationManager->mapResolution/100;
+double Utils::PixelToMeter(double inPixel)
+{
+	return inPixel * Utils::configurationManager->mapResolution / 100;
 }
-
-static double MeterToPixel(double inMeter){
-	return inMeter*100/Utils::configurationManager->mapResolution;
+double Utils::MeterToPixel(double inMeter)
+{
+	return inMeter * 100 / Utils::configurationManager->mapResolution;
 }
