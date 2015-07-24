@@ -11,7 +11,7 @@ std::vector<unsigned char> image; //the raw pixels
 
 int main()
 {
-	Map *map = new Map();
+	Map *map = Map::getInstance();
 	const char* filename = "roboticLabMap.png";
 
 	// Load the map of the room

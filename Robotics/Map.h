@@ -30,7 +30,9 @@ public:
 	vector< vector<CellIndication> > newMatrix;
 	vector<unsigned char> image;
 	vector<unsigned char> grid;
+	static Map* instance;
 
+	static Map* getInstance();
 
 	Map();
 

@@ -8,6 +8,14 @@
 #include "Map.h"
 #include "AStar/Point.h"
 
+Map* Map::getInstance(){
+	if (instance == NULL){
+		instance = new Map();
+	}
+
+	return instance;
+}
+
 Map::Map() {
 	// TODO REMOVE!!!
 	robotSizeInPixels = 12;
