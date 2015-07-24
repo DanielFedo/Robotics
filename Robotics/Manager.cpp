@@ -16,14 +16,16 @@ void Manager::Run(){
 		robot->setOdometry();
 		robot->Read();
 	}
-
+	Behaviors *turnToWayPoint;
+	turnToWayPoint = new TurnToWaypoint(robot);
     // Creating behaviors
+
     Behaviors ** behaviors = new Behaviors*[4];
     behaviors[0] = new GoForward(robot);
     behaviors[1] = new TurnLeft(robot);
     behaviors[2] = new TurnRight(robot);
 
-    // Connectiong behaviors
+    // Connecting behaviors
     behaviors[0]->addNext(behaviors[1]);
     behaviors[0]->addNext(behaviors[2]);
     behaviors[1]->addNext(behaviors[0]);
@@ -50,6 +52,11 @@ void Manager::Run(){
 		newX = robot->getXPos();
 		newY = robot->getYPos();
 		newYaw = robot->getYaw();
+
+		if (WaypointsManager::getInstance()->isInWayPoint(newX, newY))
+		{
+			turnToWayPoint->action();
+		}
 
 		// Check if the robot moved
 		double deltaX = newX - prevX;

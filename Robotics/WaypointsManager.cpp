@@ -7,14 +7,16 @@
 
 #include "WaypointsManager.h"
 
-static WaypointsManager* WaypointsManager::getInstance()
+WaypointsManager* WaypointsManager::instance = NULL;
+
+WaypointsManager* WaypointsManager::getInstance()
 {
-	return instance;
+	return WaypointsManager::instance;
 }
 
-static WaypointsManager* WaypointsManager::init(std::list<Point*> path, Robot* robot)
+WaypointsManager* WaypointsManager::init(std::list<Point*> path, Robot* robot)
 {
-	instance = new WaypointsManager(path, robot);
+	WaypointsManager::instance = new WaypointsManager(path, robot);
 }
 
 WaypointsManager::WaypointsManager(std::list<Point*> path, Robot* robot)

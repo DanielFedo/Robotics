@@ -13,6 +13,8 @@
 #include "Behaviors/GoForward.h"
 #include "Behaviors/TurnLeft.h"
 #include "Behaviors/TurnRight.h"
+#include "Behaviors/TurnToWaypoint.h"
+#include "WaypointsManager.h"
 #include <stdlib.h>
 
 class Manager {
