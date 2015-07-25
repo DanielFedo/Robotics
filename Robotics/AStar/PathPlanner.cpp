@@ -114,12 +114,12 @@ std::list<Point*> PathPlanner::FindPath (int startX, int startY, int goalX, int 
 	}
 
 	Point *pathCurrent = currentPoint;
-	finalPath.push_back(currentPoint);
+	finalPath.push_front(currentPoint);
 
 	while (!pathCurrent->isEqual(startPoint))
 	{
 		pathCurrent = cameFrom[pathCurrent];
-		finalPath.push_back(pathCurrent);
+		finalPath.push_front(pathCurrent);
 	}
 
 	return finalPath;

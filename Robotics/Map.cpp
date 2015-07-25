@@ -20,9 +20,8 @@ Map* Map::getInstance(){
 }
 
 Map::Map() {
-	// TODO REMOVE!!!
-	robotSizeInPixels = 12;
-	mapResolutionCM = 2.5;
+	robotSizeInPixels = Utils::configurationManager->robotLength;
+	mapResolutionCM = Utils::configurationManager->mapResolution;
 	gridResolutionCM = 10;
 }
 
@@ -120,7 +119,7 @@ void Map::expand()
 		// If its a Black pixel - expand it
 		if ((r == 0) & (g == 0) & (b == 0))
 		{
-			expandPixel(i, robotSizeInPixels);
+			expandPixel(i, robotSizeInPixels + 10);
 		}
 	}
 

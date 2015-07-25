@@ -63,7 +63,10 @@ bool Behaviors::canGoFroward(){
 
 	for (int i= startIndex  ; i < endIndex; i++)
 	{
-		if(robot->getLaserRead(i) <= Utils::UNSAFE_DIST)
+		float laserRead = robot->getLaserRead(i);
+		double maxDistance = Utils::MeterToPixel(Utils::UNSAFE_DIST);
+
+		if(laserRead >= maxDistance)
 		{
 			return false;
 		}

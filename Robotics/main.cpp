@@ -41,6 +41,8 @@ int main()
 	std::list<Point*>::iterator listIterator;
 	for (listIterator = path.begin(); listIterator != path.end() ;listIterator++)
 	{
+		(*listIterator)->x = (*listIterator)->x * 4;
+		(*listIterator)->y = (*listIterator)->y * 4;
 		std::cout << " [" << (*listIterator)->x << "," << (*listIterator)->y << "] " << endl;
 	}
 

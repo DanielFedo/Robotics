@@ -5,14 +5,20 @@
  *      Author: colman
  */
 
+#include <string.h>
+
 #include "ConfigurationManager.h"
+#include <iostream>
+
+using namespace std;
+
 
 
 ConfigurationManager::ConfigurationManager(const char* configurationFilePath) {
 	char attribute_name[200];
 	char fileData[10][100];
 	std::ifstream inputFile;
-	inputFile.open(configurationFilePath, std::ifstream::in);
+	inputFile.open(configurationFilePath, ios::in);
 
 	int counter = 0;
 
@@ -44,7 +50,7 @@ ConfigurationManager::ConfigurationManager(const char* configurationFilePath) {
 	this->xStart = atoi(startLocation.substr(0, startLocation.find_first_of(' ')).c_str());
 
 	// y start location
-	startLocation = startLocation.substr(0, startLocation.find_first_of(' ') + 1);
+	startLocation = startLocation.substr(startLocation.find_first_of(' ') + 1);
 	this->yStart = atoi(startLocation.c_str());
 
 	// Yaw start location

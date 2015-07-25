@@ -19,8 +19,9 @@ private:
 	std::vector<Point *> wayPoints;
 	Robot* robot;
 	Point* curPoint;
-	int index;
 public:
+
+	int index;
 	static WaypointsManager* instance;
 
 	static WaypointsManager* getInstance();

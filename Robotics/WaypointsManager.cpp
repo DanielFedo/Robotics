@@ -32,7 +32,7 @@ WaypointsManager::WaypointsManager(std::list<Point*> path, Robot* robot)
 
 		Point* tempPoint = (*listIterator);
 
-		if (i % 3 == 0 || i == path.size() -1)	{
+		if ((i != 1 && i % 1 == 0) || i == path.size() -1)	{
 			this->wayPoints.push_back(tempPoint);
 		}
 	}
@@ -67,21 +67,17 @@ bool WaypointsManager::isInWayPoint(double x,double y)
 	double dx = getCurrWayPoint()->x - x;
 	double dy = getCurrWayPoint()->y - y;
 	double distance = sqrt(pow(dx, 2) + pow(dy, 2));
+	int distanceTolerance = Utils::DISTANCE_TOLERANCE;
 
-	//std::cout << "way point x"<< " " << currWP->getX() << " " << "x" << " " << x << std::endl;
-	//std::cout << "way point y" << " " << currWP->getY() << " " << "y" << " "  << y << std::endl;
-	//std::cout << "distance: " << distance << std::endl;
-
-	int distanceTolerance;
+	std::cout << "distance: " << distance << std::endl;
 
 	if (this->isLastWayPoint())
-		int distanceTolerance = 3;
-	else
-		int distanceTolerance = 10;
+		distanceTolerance = 3;
 
 	if (distance <= distanceTolerance)
 	{
 		this->getNextWayPoint();
+		robot->setSpeed(0 ,0);
 		return true;
 	}
 	return false;

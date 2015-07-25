@@ -13,6 +13,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <fstream>
+#include <stdlib.h>
+#include <string.h>
 
 class ConfigurationManager {
 public:

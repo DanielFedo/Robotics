@@ -23,7 +23,7 @@ public:
 	static const float DEGREES_INDEX_RATIO = 666 / 270;
 	static const float MIDDLE_INDEX = 666 / 2;
 
-	static const float UNSAFE_DIST = 0.8;
+	static const float UNSAFE_DIST = 0.6;
 	
 	static int IndexToDegrees(int index);
 	static int DegreesToIndex(int degrees);
