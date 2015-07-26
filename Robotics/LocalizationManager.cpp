@@ -7,6 +7,16 @@
 
 #include "LocalizationManager.h"
 
+LocalizationManager* LocalizationManager::instance = NULL;
+
+LocalizationManager* LocalizationManager::getInstance()
+{
+	if (instance == NULL) {
+		instance = new LocalizationManager();
+	}
+	return LocalizationManager::instance;
+}
+
 LocalizationManager::LocalizationManager()
 {
 	int xStartLocation = Utils::configurationManager->xStart;

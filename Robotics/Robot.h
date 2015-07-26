@@ -27,6 +27,7 @@ class Robot {
 		void setSpeed(float speed, float angularSpeed);
 		float getLaserRead(int index);
 	    void setOdometry();
+	    void setOdometry(int x, int y, int yaw);
 		double getXPos();
 		double getYPos();
 		double getYaw();

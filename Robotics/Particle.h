@@ -18,10 +18,10 @@
 #include "Map.h"
 
 class Particle {
-private:
-	double xPos, yPos, yaw;
+
 public:
 	double belief;
+	double xPos, yPos, yaw;
 	Particle();
 
 	Particle(double xPos, double yPos, double yaw, double belif);

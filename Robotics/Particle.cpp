@@ -27,7 +27,7 @@ void Particle::printPosition(){
 double Particle::update(int deltaX, int deltaY, int deltaYaw,
 		Robot* robot) {
 
-	this->xPos =  deltaX;
+	this->xPos +=  deltaX;
 	this->yPos += deltaY;
 	this->yaw += deltaYaw;
 
@@ -48,9 +48,9 @@ double Particle::update(int deltaX, int deltaY, int deltaYaw,
 }
 
 Particle* Particle::createParticle() {
-	int xPos = this->xPos += pow(-1, rand());
-	int yPos = this->yPos += pow(-1, rand());
-	int yaw = this->yaw += (rand() % 30 - 15);
+	int xPos = this->xPos + pow(-1, rand());
+	int yPos = this->yPos + pow(-1, rand());
+	int yaw = this->yaw + (rand() % 30 - 15);
 
 	return new Particle(xPos,yPos, yaw, this->belief-0.01);
 }

@@ -10,6 +10,10 @@ class LocalizationManager {
 public:
     LocalizationManager();
 
+	static LocalizationManager* instance;
+
+	static LocalizationManager* getInstance();
+
     vector<Particle *> particles;
     void updateParticles(Robot* robot, double deltaX, double deltaY, double deltaYaw);
     Particle *getBestParticle();

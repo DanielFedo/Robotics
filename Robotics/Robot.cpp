@@ -48,6 +48,17 @@ void Robot::setOdometry()
 	pp->SetOdometry(0,0,startYaw);
 }
 
+void Robot::setOdometry(int x, int y, int yaw)
+{
+	int newX = Utils::PixelToMeter(x - Utils::configurationManager->xStart);
+	int newY = Utils::PixelToMeter(y - Utils::configurationManager->yStart);
+
+
+	int radianYaw = Utils::DegreeToRadian(yaw);
+
+	pp->SetOdometry(newX, newY,radianYaw);
+}
+
 double Robot::getXPos()
 {
 	return Utils::configurationManager->xStart + Utils::MeterToPixel(pp->GetXPos());

@@ -70,13 +70,18 @@ void Manager::Run(){
 			continue;
 
         // Update particles...
-		//LocalizationManager.updateParticles(_robot, deltaX, deltaY, deltaYaw);
-		//Particle* best = _localizationManager.getBestParticle();
-		//LocalizationManager.createParticles();
+		LocalizationManager* localizationManager = LocalizationManager::getInstance();
+		localizationManager->updateParticles(robot, deltaX, deltaY, deltaYaw);
+		localizationManager->createParticles();
+		Particle* best = localizationManager->getBestParticle();
 
+		cout << "Best Particle: X" << best->xPos << ", Y" << best->yPos << " Yaw:" << best->yaw << endl;
 		cout << "Robot's position: X" << newX << ", Y" << newY << " Yaw: "<< robot->getYaw() << endl;
 		cout << "Waypoint's position: "<< WaypointsManager::getInstance()->getCurrWayPoint()->x << " , "  << WaypointsManager::getInstance()->getCurrWayPoint()->y;
 		cout << " index: " << WaypointsManager::getInstance()->index << endl;
+
+		robot->setOdometry(best->xPos, best->yPos, best->yaw);
+
 
         if (currBehavior->stopCond()) {
         	cout << "stop condition!" << endl;
@@ -86,6 +91,9 @@ void Manager::Run(){
         	currBehavior = behaviors[0];
         	currBehavior->startCond();
         }
+
+        prevX = newX;
+        prevY = newY;
     }
     std::cout << "Manager stopped" << std::endl;
 }

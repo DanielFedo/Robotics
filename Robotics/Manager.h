@@ -15,6 +15,8 @@
 #include "Behaviors/TurnRight.h"
 #include "Behaviors/TurnToWaypoint.h"
 #include "WaypointsManager.h"
+#include "LocalizationManager.h"
+
 #include <stdlib.h>
 
 class Manager {
