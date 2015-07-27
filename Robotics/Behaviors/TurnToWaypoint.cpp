@@ -72,7 +72,7 @@ bool TurnToWaypoint::stopCond()
 
 void TurnToWaypoint::action()
 {
-	robot->setSpeed(0.0, isLeftTurn*0.05);
+	robot->setSpeed(0.0, isLeftTurn * 0.1);
 }
 
 double TurnToWaypoint::getPriority()

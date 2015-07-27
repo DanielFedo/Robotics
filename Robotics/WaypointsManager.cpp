@@ -32,7 +32,7 @@ WaypointsManager::WaypointsManager(std::list<Point*> path, Robot* robot)
 
 		Point* tempPoint = (*listIterator);
 
-		if ((i != 1 && i % 1 == 0) || i == path.size() -1)	{
+		if (i % 2 == 0 || i == path.size() -1 || i == path.size())	{
 			this->wayPoints.push_back(tempPoint);
 		}
 	}

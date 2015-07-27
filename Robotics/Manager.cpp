@@ -70,17 +70,17 @@ void Manager::Run(){
 			continue;
 
         // Update particles...
-		LocalizationManager* localizationManager = LocalizationManager::getInstance();
-		localizationManager->updateParticles(robot, deltaX, deltaY, deltaYaw);
-		localizationManager->createParticles();
-		Particle* best = localizationManager->getBestParticle();
+//		LocalizationManager* localizationManager = LocalizationManager::getInstance();
+//		localizationManager->updateParticles(robot, deltaX, deltaY, deltaYaw);
+//		localizationManager->createParticles();
+//		Particle* best = localizationManager->getBestParticle();
 
-		cout << "Best Particle: X" << best->xPos << ", Y" << best->yPos << " Yaw:" << best->yaw << endl;
+		//cout << "Best Particle: X" << best->xPos << ", Y" << best->yPos << " Yaw:" << best->yaw << endl;
 		cout << "Robot's position: X" << newX << ", Y" << newY << " Yaw: "<< robot->getYaw() << endl;
 		cout << "Waypoint's position: "<< WaypointsManager::getInstance()->getCurrWayPoint()->x << " , "  << WaypointsManager::getInstance()->getCurrWayPoint()->y;
 		cout << " index: " << WaypointsManager::getInstance()->index << endl;
 
-		robot->setOdometry(best->xPos, best->yPos, best->yaw);
+		//robot->setOdometry(best->xPos, best->yPos, best->yaw);
 
 
         if (currBehavior->stopCond()) {

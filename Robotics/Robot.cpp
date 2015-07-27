@@ -12,7 +12,7 @@ Robot::Robot() {
 	startYaw = Utils::DegreeToRadian(Utils::configurationManager->yawStart);
 
 	// Connect to the emulator
-	pc = new PlayerClient("localhost",6665);
+	pc = new PlayerClient("10.10.245.65",6665);
 
 	// Init poistion proxy
 	pp = new Position2dProxy(pc);
