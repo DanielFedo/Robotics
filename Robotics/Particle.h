@@ -8,29 +8,67 @@
 #ifndef PARTICLE_H_
 #define PARTICLE_H_
 
-#include <iostream>
-#include <vector>
-#include "Robot.h"
-#include "Utils.h"
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
-#include <cmath>
-#include <cstdlib>
+using namespace std;
+
 #include "Map.h"
+#include <libplayerc++/playerc++.h>
+using namespace PlayerCc;
+#define NORMAL_BREED 5
+#define HIGH_BREED 20
+#define MAX_PARTICLES_COUNT 200
+#define EXPANSION_RADIUS 0.3
+#define YAW_RANGE 0.2
+#define LOW_BELIEF_MIN 0.2
+#define HIGH_BELIEF_MIN 0.7
+#define BELIEF_MAGIC_NUMBER 2
+#define PARTICLE_LIFES_NUM 5
+#define EMERGENCY_EXPANSION_RADIUS EXPANSION_RADIUS * 2
+#define EMERGENCY_YAW_RANGE YAW_RANGE * 2
+#define PARTICLE_EMERGENCY_BREED MAX_PARTICLES_COUNT - 2
+#define DEFAULT_WAYPOINT_RESOLUTION 6
+#define DEFAULT_WAYPOINT_ACCURACY (0.1F)
+#define WAYPOINT_RADIUS 4
+
+#define NORMAL_BREED 5
+#define HIGH_BREED 20
+#define MAX_PARTICLES_COUNT 200
+#define EXPANSION_RADIUS 0.3
+#define YAW_RANGE 0.2
+#define LOW_BELIEF_MIN 0.2
+#define HIGH_BELIEF_MIN 0.7
+#define BELIEF_MAGIC_NUMBER 2
+#define PARTICLE_LIFES_NUM 5
+#define EMERGENCY_EXPANSION_RADIUS EXPANSION_RADIUS * 2
+#define EMERGENCY_YAW_RANGE YAW_RANGE * 2
+#define PARTICLE_EMERGENCY_BREED MAX_PARTICLES_COUNT - 2
+#define DEFAULT_WAYPOINT_RESOLUTION 6
+#define DEFAULT_WAYPOINT_ACCURACY (0.1F)
+#define WAYPOINT_RADIUS 4
+#define DETECT_EVASION_RADIUS 0.6
 
 class Particle {
-
 public:
-	double belief;
-	double xPos, yPos, yaw;
-	Particle();
+	float xDelta;
+	float yDelta;
+	float yawDelta;
+	float belief;
 
-	Particle(double xPos, double yPos, double yaw, double belif);
-    double update(int deltaX, int deltaY, int deltaYaw, Robot* robot);
-    double probByMove(int deltaX, int deltaY, int deltaYaw);
-    double probByMeasure(Robot* robot);
-    Particle* createParticle();
-    double convertLaserIndexToLaserAngle(int index);
-    void printPosition();
+	int lifes;
+	int age;
+
+	float Random(float min, float max);
+	float ProbabilityByMovement(float xDelta, float yDelta, float yawDelta);
+	float ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelta, Map* map, LaserProxy* laserProxy);
+
+	Particle(float xDelta, float yDelta, float yawDelta, float belief);
+	Particle* CreateChild();
+	Particle* CreateChild(float expansionRadius, float yawRange);
+	void Update(float X_delta, float Y_delta, float Yaw_delta, Map* map, LaserProxy* lp);
+	bool IsDead();
 };
 
 #endif /* PARTICLE_H_ */

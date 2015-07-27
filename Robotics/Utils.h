@@ -59,6 +59,13 @@ public:
 
 	// Others
 	static const double ANGULAR_RESULUTION = 0.36;
+
+
+	static float RobotToPixelX(float Xdelta, float resolution, float mapWidth);
+	static float RobotToPixelY(float Ydelta, float resolution, float mapHeight);
+	static float PixelToRobotX(float Xdelta, float resolution, float mapWidth);
+	static float PixelToRobotY(float Ydelta, float resolution, float mapHeight);
+
 };
 
 #endif /* UTILS_H_ */

@@ -33,6 +33,9 @@ public:
 	int robotLength;
 	int robotWidth;
 
+	// not sure about that one..
+	double cmInCell();
+
 };
 
 #endif /* CONFIGURATIONMANAGER_H_ */

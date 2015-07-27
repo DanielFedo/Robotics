@@ -1,105 +1,147 @@
-/*
- * LocalizationManager.cpp
- *
- *  Created on: Jun 12, 2015
- *      Author: colman
- */
-
 #include "LocalizationManager.h"
+#include <ctime>
 
-LocalizationManager* LocalizationManager::instance = NULL;
+LocalizationManager::LocalizationManager(Map* map) {
+	this->map = map;
 
-LocalizationManager* LocalizationManager::getInstance()
-{
-	if (instance == NULL) {
-		instance = new LocalizationManager();
-	}
-	return LocalizationManager::instance;
+	xDelta = yDelta = yawDelta = 0;
 }
 
-LocalizationManager::LocalizationManager()
+bool LocalizationManager::CreateParticle(float xDelta, float yDelta, float yawDelta, float belief)
 {
-	int xStartLocation = Utils::configurationManager->xStart;
-	int yStartLocation = Utils::configurationManager->yStart;
-	int yawStartLocation = Utils::configurationManager->yawStart;
+	CreateParticle(xDelta, yDelta, yawDelta, belief, EXPANSION_RADIUS, YAW_RANGE, HIGH_BREED);
+}
 
-	// Create the first particle
-	Particle* firstParticle = new Particle(xStartLocation, yStartLocation, yawStartLocation, 1);
-	particles.push_back(firstParticle);
+bool LocalizationManager::CreateParticle(float xDelta, float yDelta, float yawDelta, float belief, float expansionRadius, float yawRange, int childsCount)
+{
+	if (particles.size() + childsCount < MAX_PARTICLES_COUNT)
+        {
+            Particle* particle = new Particle(xDelta, yDelta, yawDelta, belief);
+            particles.push_back(particle);
+            vector<Particle*> childs;
+            BreedParticle(particle, childsCount, expansionRadius, yawRange, childs);
+            ChildsToParticles(childs);
+            return true;
+	}
 
-	// Create all particles
-	for(int i = 1; i < Utils::PARTICLES_NUMBER; i++)
-	{
-		Particle* currentParticle = firstParticle->createParticle();
-		particles.push_back(currentParticle);
+	return false;
+}
+
+void LocalizationManager::Update(float deltaX, float deltaY, float deltaYaw, LaserProxy* laserProxy) {
+	vector<Particle*> childsToAdd;
+	vector<int> childsToRemove;
+	int particlesSize = particles.size();
+
+	for (int i = 0; i < particlesSize; i++)
+        {
+            Particle* particle = particles[i];
+            particle->Update(deltaX, deltaY, deltaYaw, map, laserProxy);
+
+            float belif = particle->belief;
+
+            if (belif <= LOW_BELIEF_MIN)
+            {
+                particle->lifes--;
+                //printf("Particle <%f, %f, %f> belief %f\n", particle->GetX(), particle->GetY(), particle->GetYaw(), particle->GetBelif());
+                if (particle->IsDead() || belif <= 0)
+                {
+                    //printf("So much death\n");
+                    //PlayerClient* pc = new PlayerClient("localhost",6665);
+                    //Position2dProxy* pp = new Position2dProxy(pc);
+                    //pp->SetSpeed(0, 0);
+                    childsToRemove.push_back(i);
+                }
+            }
+            else if (belif >= HIGH_BELIEF_MIN &&
+                     ((particlesSize + HIGH_BREED + childsToAdd.size()) < MAX_PARTICLES_COUNT))
+            {
+                    particle->age++;
+                    BreedParticle(particle, HIGH_BREED, childsToAdd);
+            }
+            else if ((particlesSize + NORMAL_BREED + childsToAdd.size()) < MAX_PARTICLES_COUNT)
+            {
+                    particle->age++;
+                    BreedParticle(particle, NORMAL_BREED, childsToAdd);
+            }
+	}
+
+	if (childsToRemove.size() > 0)
+        {
+		for(int i = childsToRemove.size() - 1; i >=0 ; i--)
+                {
+			int indexToRemove = childsToRemove[i];
+			particles.erase(particles.begin() + indexToRemove);
+		}
+	}
+
+	if (childsToAdd.size() > 0)
+        {
+		ChildsToParticles(childsToAdd);
 	}
 }
 
-	void LocalizationManager::updateParticles(Robot* robot, double deltaX, double deltaY, double deltaYaw)
-	{
-		double currBelief;
-		std::vector<Particle*> newParticles;
-		int maxIndex = 0;
-		double maxBelief = 0;
+void LocalizationManager::BreedParticle(Particle* particle, int childCount, vector<Particle*>& childs)
+{
+	if (particles.size() + childCount < MAX_PARTICLES_COUNT)
+        {
+            for (int i = 0; i < childCount; i++)
+            {
+                    Particle* child = particle->CreateChild();
+                    childs.push_back(child);
+            }
+	}
+}
 
-		for(unsigned int i = 0; i < this->particles.size(); i++)
-		{
-			currBelief =
-				this->particles[i]->update(deltaX, deltaY, deltaYaw, robot);
+void LocalizationManager::BreedParticle(Particle* particle, int childCount, float expansionRadius, float yawRange, vector<Particle*>& childs)
+{
+	if (particles.size() + childCount < MAX_PARTICLES_COUNT)
+        {
+            for (int i = 0; i < childCount; i++)
+            {
+                    Particle* child = particle->CreateChild(expansionRadius, yawRange);
+                    childs.push_back(child);
+            }
+	}
+}
 
-			if (currBelief > maxBelief){
-				maxBelief = currBelief;
-				maxIndex = i;
-			}
+Particle* LocalizationManager::BestParticle()
+{
+	if (particles.empty())
+        {
+            //printf("Out of particles! Making new ones!\n");
+            CreateParticle(xDelta, yDelta, yawDelta, 1, EMERGENCY_EXPANSION_RADIUS, EMERGENCY_YAW_RANGE,  PARTICLE_EMERGENCY_BREED);
 
-			if(currBelief >= Utils::MIN_BELIEF_THRESHOLD)
-			{
-				newParticles.push_back(this->particles[i]);
-			}
-		}
+            Particle* randomParticle = particles[rand() % particles.size()];
 
-		// don't get 0 particles
-		if (newParticles.size() == 0){
-			if (this->particles[maxIndex]->belief < 0.2)
-			{
-				this->particles[maxIndex]->belief = 0.8;
-			}
-			newParticles.push_back(this->particles[maxIndex]);
-			for(int i = 2; i < 30; i++)
-			{
-				Particle* currentParticle = this->particles[maxIndex]->createParticle();
-				newParticles.push_back(currentParticle);
-			}
-		}
+            xDelta = randomParticle->xDelta;
+            yDelta = randomParticle->yDelta;
+            yawDelta = randomParticle->yawDelta;
 
-		particles = newParticles;
+            return randomParticle;
 	}
 
-	void LocalizationManager::createParticles()
-	{
-		for (unsigned int i = 0; i < this->particles.size(); i++){
-			// create new one
-			if ((particles[i]->belief > Utils::GOOD_BELIEF_THRESHOLD) &&
-					(this->particles.size() < Utils::PARTICLES_NUMBER))
-			{
-				Particle* son = particles[i]->createParticle();
-				particles.push_back(son);
-			}
-		}
+	Particle* bestParticle = particles[0];
+
+	for (int i = 1; i < particles.size(); i++)
+        {
+            if (particles[i]->belief > bestParticle->belief &&
+                particles[i]->age < bestParticle->age)
+            {
+            	bestParticle = particles[i];
+            }
 	}
 
+	xDelta = bestParticle->xDelta;
+	yDelta = bestParticle->yDelta;
+	yawDelta = bestParticle->yawDelta;
 
-	Particle* LocalizationManager::getBestParticle()
-	{
-		int bestParticle = 0;
+	return bestParticle;
+}
 
-		for(unsigned int i = 0; i < particles.size(); i++)
-		{
-			if (particles[bestParticle]->belief < particles[i]->belief)
-			{
-				bestParticle = i;
-			}
-		}
-
-		return particles[bestParticle];
+void LocalizationManager::ChildsToParticles(vector<Particle*> childs)
+{
+	for (int i = 0; i < childs.size(); i++)
+        {
+		particles.push_back(childs[i]);
 	}
+}

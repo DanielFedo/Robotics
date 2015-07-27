@@ -77,14 +77,19 @@ ConfigurationManager::ConfigurationManager(const char* configurationFilePath) {
 	std::string mapResolutionCM = fileData[4];
 	this->mapResolution = atof(mapResolutionCM.c_str());
 
-
-
 	// Fix according to resolution
 	this->robotLength = this->robotLength / this->mapResolution;
 	this->robotWidth = this->robotWidth / this->mapResolution;
+
 }
 
 ConfigurationManager::~ConfigurationManager() {
 	// TODO Auto-generated destructor stub
 }
+
+// not sure about that one..
+double ConfigurationManager::cmInCell() {
+	return (this->gridResolution / this->mapResolution);
+}
+
 
