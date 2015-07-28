@@ -77,6 +77,10 @@ ConfigurationManager::ConfigurationManager(const char* configurationFilePath) {
 	std::string mapResolutionCM = fileData[4];
 	this->mapResolution = atof(mapResolutionCM.c_str());
 
+	// Grid resolution
+	mapResolutionCM = fileData[5];
+	this->gridResolution = atof(mapResolutionCM.c_str());
+
 	// Fix according to resolution
 	this->robotLength = this->robotLength / this->mapResolution;
 	this->robotWidth = this->robotWidth / this->mapResolution;
@@ -89,7 +93,7 @@ ConfigurationManager::~ConfigurationManager() {
 
 // not sure about that one..
 double ConfigurationManager::cmInCell() {
-	return (this->gridResolution / this->mapResolution);
+	return (this->gridResolution);
 }
 
 

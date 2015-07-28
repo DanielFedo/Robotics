@@ -46,6 +46,10 @@ void Manager::Run(){
 	double prevYaw = Utils::configurationManager->yawStart;
     double newX, newY, newYaw;
 
+    LocalizationManager* localizationManager = new LocalizationManager(Map::getInstance());
+
+    localizationManager->CreateParticle(prevX, prevY, prevYaw, 1);
+
     while (currBehavior != NULL) {
     	robot->Read();
 		robot->Read();
@@ -69,18 +73,20 @@ void Manager::Run(){
 		if (deltaX == 0 &&  deltaY == 0 && deltaYaw == 0)
 			continue;
 
-        // Update particles...
-//		LocalizationManager* localizationManager = LocalizationManager::getInstance();
-//		localizationManager->updateParticles(robot, deltaX, deltaY, deltaYaw);
-//		localizationManager->createParticles();
-//		Particle* best = localizationManager->getBestParticle();
+		cout << "Delta: [" << deltaX << ", " << deltaY << ", " << deltaYaw << "]" << endl;
 
-		//cout << "Best Particle: X" << best->xPos << ", Y" << best->yPos << " Yaw:" << best->yaw << endl;
+        // Update particles...
+		localizationManager->Update(deltaX, deltaY, deltaYaw, robot->getLaserProxy());
+//		localizationManager->createParticles();
+		Particle* best = localizationManager->BestParticle();
+
+
+		cout << "Best Particle: [" << best->GetX() << ", " << best->GetY() << ", " << best->GetYaw() << "] belief: " << best->belief << endl;
 		cout << "Robot's position: X" << newX << ", Y" << newY << " Yaw: "<< robot->getYaw() << endl;
 		cout << "Waypoint's position: "<< WaypointsManager::getInstance()->getCurrWayPoint()->x << " , "  << WaypointsManager::getInstance()->getCurrWayPoint()->y;
 		cout << " index: " << WaypointsManager::getInstance()->index << endl;
 
-		//robot->setOdometry(best->xPos, best->yPos, best->yaw);
+		robot->setOdometry(best->GetX(), best->GetY(), best->GetYaw());
 
 
         if (currBehavior->stopCond()) {
@@ -92,8 +98,9 @@ void Manager::Run(){
         	currBehavior->startCond();
         }
 
-        prevX = newX;
-        prevY = newY;
+        prevX = best->GetX();
+        prevY = best->GetY();
+        prevYaw = best->GetYaw();
     }
     std::cout << "Manager stopped" << std::endl;
 }

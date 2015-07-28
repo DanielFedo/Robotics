@@ -9,16 +9,17 @@ using namespace std;
 
 class LocalizationManager {
 
+private:
 	Map* map;
-		vector<Particle*> particles;
+	vector<Particle*> particles;
 
-		float xDelta;
-		float yDelta;
-		float yawDelta;
+	float xDelta;
+	float yDelta;
+	float yawDelta;
 
-		void ChildsToParticles(vector<Particle*> childs);
-		void BreedParticle(Particle* particle, int dwChildCount, vector<Particle*>& childs);
-		void BreedParticle(Particle* particle, int dwChildCount, float dExpansionRadius, float dYawRange, vector<Particle*>& childs);
+	void ChildsToParticles(vector<Particle*> childs);
+	void BreedParticle(Particle* particle, int dwChildCount, vector<Particle*>& childs);
+	void BreedParticle(Particle* particle, int dwChildCount, float dExpansionRadius, float dYawRange, vector<Particle*>& childs);
 
 public:
 	bool CreateParticle(float xDelta, float yDelta, float yawDelta, float belief);

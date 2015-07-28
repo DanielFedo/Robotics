@@ -31,6 +31,7 @@ class Robot {
 		double getXPos();
 		double getYPos();
 		double getYaw();
+		LaserProxy* getLaserProxy();
 };
 
 #endif /* ROBOT_H_ */

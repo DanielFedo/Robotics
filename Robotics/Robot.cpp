@@ -12,7 +12,7 @@ Robot::Robot() {
 	startYaw = Utils::DegreeToRadian(Utils::configurationManager->yawStart);
 
 	// Connect to the emulator
-	pc = new PlayerClient("10.10.245.65",6665);
+	pc = new PlayerClient("127.0.0.1",6665);
 
 	// Init poistion proxy
 	pp = new Position2dProxy(pc);
@@ -54,7 +54,7 @@ void Robot::setOdometry(int x, int y, int yaw)
 	int newY = Utils::PixelToMeter(y - Utils::configurationManager->yStart);
 
 
-	int radianYaw = Utils::DegreeToRadian(yaw);
+	double radianYaw = Utils::DegreeToRadian(yaw);
 
 	pp->SetOdometry(newX, newY,radianYaw);
 }
@@ -76,4 +76,9 @@ double Robot::getYaw()
 		degree = 360 + degree;
 
 	return degree;
+}
+
+LaserProxy* Robot::getLaserProxy()
+{
+	return lp;
 }

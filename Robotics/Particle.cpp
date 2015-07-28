@@ -33,7 +33,7 @@ void Particle::Update(float xDelta, float yDelta, float yawDelta, Map* map, Lase
     this->yDelta += yDelta;
     this->yawDelta += yawDelta;
 
-    float predictionBelif = ProbabilityByMovement(this->xDelta, this->yDelta, this->yawDelta) * this->belief;
+    float predictionBelif = ProbabilityByMovement(xDelta, yDelta, yawDelta) * this->belief;
     float probabilityByScan = ProbabilityByLaserScan(this->xDelta, this->yDelta, this->yawDelta, map, laserProxy);
     this->belief = probabilityByScan * predictionBelif * BELIEF_MAGIC_NUMBER;
 
@@ -52,19 +52,19 @@ float Particle::ProbabilityByMovement(float xDelta, float yDelta, float yawDelta
 
 	float distance = sqrt(pow(xDelta,2) + pow(yDelta,2));
 
-	if (distance < 0.1)
+	if (distance < 1)
 		return 1;
 
-	if (distance < 0.2)
+	if (distance < 3)
 		return 0.9;
 
-	if (distance < 0.4)
+	if (distance < 5)
 		return 0.7;
 
-	if (distance < 0.5)
+	if (distance < 7)
 		return 0.5;
 
-	if (distance < 0.7)
+	if (distance < 9)
 		return 0.3;
 
 	return 0.1;
@@ -72,33 +72,32 @@ float Particle::ProbabilityByMovement(float xDelta, float yDelta, float yawDelta
 
 float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelta, Map* map, LaserProxy* laserProxy)
 {
+	cout << "X: " << xDelta << "Y: " << yDelta << " YAW: " << yawDelta << endl;
+
 	// should be pixels.
-	float resolution = (Utils::configurationManager->mapResolution) / 100;
 	float mapWidth = map->width;
 	float mapHeight = map->height;
 
-	float x = Utils::RobotToPixelX(xDelta, resolution, mapWidth);
-	float y = Utils::RobotToPixelY(yDelta, resolution, mapHeight);
+	float x = xDelta;
+	float y = yDelta;
 
-	double cmInCell = Utils::configurationManager->cmInCell();
+	int xCoord = floor(x / 4);
+	int yCoord = floor(y / 4);
 
-        int xCoord = floor(x / cmInCell);
-        int yCoord = floor(y / cmInCell);
-
-	if (x < 0 || (x) >= mapWidth ||
-	    y < 0 || (y) >= mapHeight)
-        {
-            //printf("Oops! out of bound! (%f, %f)\n", x, y);
-            return 0;
+	if (x < 0 || x >= mapWidth ||
+	    y < 0 || y >= mapHeight)
+	{
+		//printf("Oops! out of bound! (%f, %f)\n", x, y);
+		return 0;
 	}
 
-	int** grid = map->grid;
+	vector< vector<Utils::CELL_STATUS> > grid = map->matrix;
 
-        if (grid[yCoord][xCoord] == 1)
-        {
-            //printf("obstacle ahead! at (%u, %u) with value:%u\n", yCoord, xCoord, grid[yCoord][xCoord]);
-            return 0;
-        }
+	if (grid[yCoord][xCoord] == 1)
+	{
+		printf("!!obstacle ahead! at (%u, %u) with value:%u\n", yCoord, xCoord, grid[yCoord][xCoord]);
+		return 0;
+	}
 
 	int scans = laserProxy->GetCount();
 	float maxRange = laserProxy->GetMaxRange();
@@ -107,53 +106,73 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 	float correctHits = 0;
 	int boundaryMisses = 0;
 
-	for(int i=0; i<scans; i++)
-        {
-            float range = laserProxy->GetRange(i);
+	for(int i=0; i < scans; i++)
+	{
+		float range = laserProxy->GetRange(i);
 
-            if (range < maxRange)
-            {
-                totalHits++;
+		if (range < maxRange)
+		{
+			totalHits++;
 
-                float bearing = laserProxy->GetBearing(i);
-                float obstacleX = xDelta + range * cos(yawDelta + bearing);
-                float obstacleY = yDelta + range * sin(yawDelta + bearing);
+			float bearing = Utils::IndexToRadians(i);
 
-                obstacleX = Utils::RobotToPixelX(obstacleX, resolution, mapWidth);
-                obstacleY = Utils::RobotToPixelY(obstacleY, resolution, mapHeight);
+			float rangeInPixels = Utils::MeterToPixel(range);
+			float yawInRadians = Utils::DegreeToRadian(yawDelta);
 
-                if ((obstacleX) < 0 || (obstacleX) >= mapWidth ||
-                		obstacleY < 0 || (obstacleY) >= mapHeight)
-                {
-                    boundaryMisses++;
-                    continue;
-                }
+			float obstacleX = xDelta + rangeInPixels * cos(yawInRadians + bearing);
+			float obstacleY = yDelta + rangeInPixels * sin(yawInRadians + bearing);
 
-                xCoord = floor(obstacleX / cmInCell);
-                yCoord = floor(obstacleY / cmInCell);
+			cout << "obstacle in range: " << rangeInPixels << " yaw: " << Utils::RadianToDegree(yawInRadians + bearing) << endl;
 
-                if (grid[yCoord][xCoord] == 1)
-                {
+			if ((obstacleX) < 0 || (obstacleX) >= mapWidth -10 ||
+					obstacleY < 0 || (obstacleY) >= mapHeight -10)
+			{
+				boundaryMisses++;
+				continue;
+			}
 
-                    correctHits++;
-//                            printf("%f\n", correctHits);
-                }
-                else
-                {
-//                            printf("Oh noes, no hit at (%u, %u)\n", xCoord, yCoord);
-                }
-            }
+			if (grid[obstacleY / 4][obstacleX / 4] == 1)
+			{
+
+				correctHits++;
+				cout << "correct hit on: [" << obstacleX << ", " << obstacleY << "]   ";
+			}
+			else
+			{
+				cout << "!missed hit on: [" << obstacleX << ", " << obstacleY << "]   ";
+			}
+		}
 	}
 
 	float accuracy = correctHits / totalHits;
-//	printf("Particle accuracy: %f\n", accuracy);
+	cout << "--Particle accuracy: " << accuracy << " Yaw " << yawDelta << endl;
+
 	return accuracy;
 }
 
+Particle* Particle::CreateChild()
+{
+    return CreateChild(EXPANSION_RADIUS, YAW_RANGE);
+}
 
 bool Particle::IsDead()
 {
     return lifes <= 0;
+}
+
+float Particle::GetX()
+{
+    return xDelta;
+}
+
+float Particle::GetY()
+{
+    return yDelta;
+}
+
+float Particle::GetYaw()
+{
+    return yawDelta;
 }
 
 
