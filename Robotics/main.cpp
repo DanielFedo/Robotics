@@ -26,6 +26,8 @@ int main()
 	// Load the map into a matrix
 	map->loadToMatrix();
 
+	map->printMap();
+
 	PathPlanner *astar = new PathPlanner();
 	std::list<Point*> path;
 

@@ -40,11 +40,11 @@ Point * Map::getLocationInMap(Point *locationInWorld) {
 void Map::loadToMatrix()
 {
 	// Resize the matrix to match the image size
-	matrix.resize(this->gridWidth);
+	matrix.resize(this->gridHeight);
 
-	for (int i = 0; i < this->gridWidth; i++)
+	for (int i = 0; i < this->gridHeight; i++)
 	{
-		matrix[i].resize(this->gridHeight);
+		matrix[i].resize(this->gridWidth);
 	}
 
 	int r;
@@ -186,9 +186,9 @@ void Map::writePng(const char* filename, std::vector<unsigned char>& image, unsi
 // Prints the nap to the console
 void Map::printMap()
 {
-	for (int i = 0; i < height; i++)
+	for (int i = 0; i < gridHeight; i++)
 	{
-		for (int j = 0; j < width; j++)
+		for (int j = 0; j < gridWidth; j++)
 		{
 			std::cout <<  matrix[i][j] << "";
 		}

@@ -114,13 +114,14 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 		{
 			totalHits++;
 
-			float bearing = Utils::IndexToRadians(i);
+			float bearing = laserProxy->GetBearing(i);
+					//Utils::IndexToRadians(i);
 
 			float rangeInPixels = Utils::MeterToPixel(range);
 			float yawInRadians = Utils::DegreeToRadian(yawDelta);
 
 			float obstacleX = xDelta + rangeInPixels * cos(yawInRadians + bearing);
-			float obstacleY = yDelta + rangeInPixels * sin(yawInRadians + bearing);
+			float obstacleY = yDelta - rangeInPixels * sin(yawInRadians + bearing);
 
 			cout << "obstacle in range: " << rangeInPixels << " yaw: " << Utils::RadianToDegree(yawInRadians + bearing) << endl;
 
