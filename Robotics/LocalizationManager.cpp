@@ -34,36 +34,32 @@ void LocalizationManager::Update(float deltaX, float deltaY, float deltaYaw, Las
 
 
 	for (int i = 0; i < particlesSize; i++)
-        {
-            Particle* particle = particles[i];
-            particle->Update(deltaX, deltaY, deltaYaw, map, laserProxy);
+	{
+		Particle* particle = particles[i];
+		particle->Update(deltaX, deltaY, deltaYaw, map, laserProxy);
 
-            float belif = particle->belief;
+		float belif = particle->belief;
 
-            if (belif <= LOW_BELIEF_MIN)
-            {
-                particle->lifes--;
-                //printf("Particle <%f, %f, %f> belief %f\n", particle->GetX(), particle->GetY(), particle->GetYaw(), particle->GetBelif());
-                if (particle->IsDead() || belif <= 0)
-                {
-                    //printf("So much death\n");
-                    //PlayerClient* pc = new PlayerClient("localhost",6665);
-                    //Position2dProxy* pp = new Position2dProxy(pc);
-                    //pp->SetSpeed(0, 0);
-                    childsToRemove.push_back(i);
-                }
-            }
-            else if (belif >= HIGH_BELIEF_MIN &&
-                     ((particlesSize + HIGH_BREED + childsToAdd.size()) < MAX_PARTICLES_COUNT))
-            {
-                    particle->age++;
-                    BreedParticle(particle, HIGH_BREED, childsToAdd);
-            }
-            else if ((particlesSize + NORMAL_BREED + childsToAdd.size()) < MAX_PARTICLES_COUNT)
-            {
-                    particle->age++;
-                    BreedParticle(particle, NORMAL_BREED, childsToAdd);
-            }
+		if (belif <= LOW_BELIEF_MIN)
+		{
+			particle->lifes--;
+
+			if (particle->IsDead() || belif <= 3)
+			{
+				childsToRemove.push_back(i);
+			}
+		}
+		else if (belif >= HIGH_BELIEF_MIN &&
+				 ((particlesSize + HIGH_BREED + childsToAdd.size()) < MAX_PARTICLES_COUNT))
+		{
+				particle->age++;
+				BreedParticle(particle, HIGH_BREED, childsToAdd);
+		}
+		else if ((particlesSize + NORMAL_BREED + childsToAdd.size()) < MAX_PARTICLES_COUNT)
+		{
+				particle->age++;
+				BreedParticle(particle, NORMAL_BREED, childsToAdd);
+		}
 	}
 
 	if (childsToRemove.size() > 0)
@@ -76,7 +72,7 @@ void LocalizationManager::Update(float deltaX, float deltaY, float deltaYaw, Las
 	}
 
 	if (childsToAdd.size() > 0)
-        {
+	{
 		ChildsToParticles(childsToAdd);
 	}
 }
@@ -109,7 +105,7 @@ Particle* LocalizationManager::BestParticle()
 {
 	if (particles.empty())
 	{
-		//printf("Out of particles! Making new ones!\n");
+		printf("!!Out of particles! Making new ones!\n");
 		CreateParticle(xDelta, yDelta, yawDelta, 1, EMERGENCY_EXPANSION_RADIUS, EMERGENCY_YAW_RANGE,  PARTICLE_EMERGENCY_BREED);
 
 		Particle* randomParticle = particles[rand() % particles.size()];
@@ -123,14 +119,14 @@ Particle* LocalizationManager::BestParticle()
 
 	Particle* bestParticle = particles[0];
 
-	cout << "** Choosing best particle **" << endl;
+	//cout << "** Choosing best particle **" << endl;
 
 	for (int i = 1; i < particles.size(); i++)
 	{
-		cout << "[" << particles[i]->xDelta << "," << particles[i]->yDelta << "] Yaw: " << particles[i]->yawDelta << " b: " << particles[i]->belief << " l: " << particles[i]->lifes << endl;
+		//cout << "[" << particles[i]->xDelta << "," << particles[i]->yDelta << "] Yaw: " << particles[i]->yawDelta << " b: " << particles[i]->belief << " l: " << particles[i]->lifes << endl;
 
-		if (particles[i]->belief > bestParticle->belief &&
-			particles[i]->age < bestParticle->age)
+		if (particles[i]->belief > bestParticle->belief)
+				//&& particles[i]->age < bestParticle->age)
 		{
 			bestParticle = particles[i];
 		}

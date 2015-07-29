@@ -35,7 +35,7 @@ void Particle::Update(float xDelta, float yDelta, float yawDelta, Map* map, Lase
 
     float predictionBelif = ProbabilityByMovement(xDelta, yDelta, yawDelta) * this->belief;
     float probabilityByScan = ProbabilityByLaserScan(this->xDelta, this->yDelta, this->yawDelta, map, laserProxy);
-    this->belief = probabilityByScan * predictionBelif * BELIEF_MAGIC_NUMBER;
+    this->belief = probabilityByScan ;//* predictionBelif; //* BELIEF_MAGIC_NUMBER;
 
     if (this->belief > 1)
     	this->belief = 1;
@@ -72,7 +72,7 @@ float Particle::ProbabilityByMovement(float xDelta, float yDelta, float yawDelta
 
 float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelta, Map* map, LaserProxy* laserProxy)
 {
-	cout << "X: " << xDelta << "Y: " << yDelta << " YAW: " << yawDelta << endl;
+	//cout << "X: " << xDelta << "Y: " << yDelta << " YAW: " << yawDelta << endl;
 
 	// should be pixels.
 	float mapWidth = map->width;
@@ -123,30 +123,31 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 			float obstacleX = xDelta + rangeInPixels * cos(yawInRadians + bearing);
 			float obstacleY = yDelta - rangeInPixels * sin(yawInRadians + bearing);
 
-			cout << "obstacle in range: " << rangeInPixels << " yaw: " << Utils::RadianToDegree(yawInRadians + bearing) << endl;
+			//cout << "obstacle in range: " << rangeInPixels << " yaw: " << Utils::RadianToDegree(yawInRadians + bearing) << endl;
 
 			if ((obstacleX) < 0 || (obstacleX) >= mapWidth -10 ||
 					obstacleY < 0 || (obstacleY) >= mapHeight -10)
 			{
 				boundaryMisses++;
+				totalHits--;
 				continue;
 			}
 
-			if (grid[obstacleY / 4][obstacleX / 4] == 1)
+			if (grid[floor(obstacleY / 4)][floor(obstacleX / 4)] == 1)
 			{
 
 				correctHits++;
-				cout << "correct hit on: [" << obstacleX << ", " << obstacleY << "]   ";
+				//cout << "correct hit on: [" << obstacleX << ", " << obstacleY << "]   ";
 			}
 			else
 			{
-				cout << "!missed hit on: [" << obstacleX << ", " << obstacleY << "]   ";
+				//cout << "!missed hit on: [" << obstacleX << ", " << obstacleY << "]   ";
 			}
 		}
 	}
 
 	float accuracy = correctHits / totalHits;
-	cout << "--Particle accuracy: " << accuracy << " Yaw " << yawDelta << endl;
+	//cout << "--Particle accuracy: " << accuracy << " Yaw " << yawDelta << endl;
 
 	return accuracy;
 }

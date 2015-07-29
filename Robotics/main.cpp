@@ -31,8 +31,6 @@ int main()
 	PathPlanner *astar = new PathPlanner();
 	std::list<Point*> path;
 
-
-
 	int startLocationX = 362 / 4;
 	int startLocationY = 305 / 4;
 	int goalX = 169 / 4;
