@@ -12,28 +12,16 @@ std::vector<unsigned char> image; //the raw pixels
 int main()
 {
 	Map *map = Map::getInstance();
-	const char* filename = "roboticLabMap.png";
+	char* filename = "roboticLabMap.png";
 
-	// Load the map of the room
-	map->loadPng(filename);
+	// Init the map
+	map->init(filename);
 
-	// Load original map to a matrix
-	map->loadMapToMatrix();
-
-	// Expand the map relative to the the robot's size
-	map->expand();
-
-	// Convert the map to a grid
-	map->convertToGrid();
-
-	// Load the map into a matrix
-	map->loadToMatrix();
-
-	map->printMap();
-
+	// Use astar to calculat the path fo the robot
 	PathPlanner *astar = new PathPlanner();
 	std::list<Point*> path;
 
+	// Calculate robot location on the grid
 	int startLocationX = 362 / 4;
 	int startLocationY = 305 / 4;
 	int goalX = 169 / 4;
@@ -41,6 +29,7 @@ int main()
 
 	path = astar->FindPath(startLocationX, startLocationY, goalX, goalY, map);
 
+	// Convert waypoints from grid to map
 	std::list<Point*>::iterator listIterator;
 	for (listIterator = path.begin(); listIterator != path.end() ;listIterator++)
 	{
@@ -52,8 +41,10 @@ int main()
 	// Create our robot
 	Robot *robot = new Robot();
 
+	// Init our waypoint manager
 	WaypointsManager::init(path, robot);
 
+	// Launch the manager
 	Manager *manager = new Manager(robot);
 	manager->Run();
 

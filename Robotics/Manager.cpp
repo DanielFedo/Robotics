@@ -11,12 +11,14 @@ Manager::Manager(Robot *robot){
 	this->robot = robot;
 }
 
-void Manager::Run(){
-
-	for (int i = 0; i < 15; i++) {
+void Manager::Run()
+{
+	for (int i = 0; i < 15; i++)
+	{
 		robot->setOdometry();
 		robot->Read();
 	}
+
 	LocalizationManager* localizationManager = new LocalizationManager(Map::getInstance());
 
 	double prevX = Utils::configurationManager->xStart;
@@ -44,7 +46,8 @@ void Manager::Run(){
 
     robot->Read();
 
-    if (!currBehavior->startCond()) {
+    if (!currBehavior->startCond())
+    {
         std::cout << "Cannot start the first behavior" << std::endl;
         return;
     }
@@ -55,7 +58,8 @@ void Manager::Run(){
     bool reachedGoal = false;
 
     // Main loop
-    while (!reachedGoal) {
+    while (!reachedGoal)
+    {
     	cout << "----------" << endl;
 
     	robot->Read();
@@ -101,10 +105,13 @@ void Manager::Run(){
 
 
 		// Check if we need to switch to the next behavior
-        if (currBehavior->stopCond()) {
+        if (currBehavior->stopCond())
+        {
         	cout << "stop condition!" << endl;
             currBehavior = currBehavior->selectNext();
-        } else if (WaypointsManager::getInstance()->isInWayPoint(newX, newY)){
+        }
+        else if (WaypointsManager::getInstance()->isInWayPoint(newX, newY))
+        {
         	cout << "Reached to the way point!" << endl;
 
         	if (WaypointsManager::getInstance()->getCurrWayPoint() == NULL)
