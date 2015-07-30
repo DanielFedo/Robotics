@@ -45,11 +45,6 @@ std::vector<Point *> WaypointsManager::getWayPoints(){
 	return this->wayPoints;
 }
 
-void WaypointsManager::directRobot()
-{
-
-}
-
 Point* WaypointsManager::getCurrWayPoint() {
 	if (index >= wayPoints.size()){
 		return NULL;

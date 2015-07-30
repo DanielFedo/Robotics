@@ -30,7 +30,6 @@ public:
 	WaypointsManager(std::list<Point*>, Robot* robot);
 	std::vector<Point *> getWayPoints();
 	Point getNextPoint();
-	void directRobot();
 	Point* getCurrWayPoint();
 	bool isInWayPoint(double x,double y);
 	bool isLastWayPoint();
