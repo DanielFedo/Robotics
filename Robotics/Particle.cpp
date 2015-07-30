@@ -17,7 +17,7 @@ Particle::Particle(float xDelta, float yDelta, float yawDelta, float belief)
 
 	this->age = 1;
 }
-
+// Create a new chuild-particle.
 Particle* Particle::CreateChild(float expansionRadius, float yawRange)
 {
     float newX = this->xDelta + Random(-expansionRadius, expansionRadius);
@@ -26,18 +26,22 @@ Particle* Particle::CreateChild(float expansionRadius, float yawRange)
     return new Particle(newX, newY, newYaw, -1);
 }
 
+// Update the particle
 void Particle::Update(float xDelta, float yDelta, float yawDelta, Map* map, LaserProxy* laserProxy)
 {
 	this->xDelta += xDelta;
     this->yDelta += yDelta;
     this->yawDelta += yawDelta;
 
-    //float predictionBelif = ProbabilityByMovement(xDelta, yDelta, yawDelta) * this->belief;
+    // Calculating the belief of the particle, by using the probability by movement and laser scan.
+    float predictionBelif = ProbabilityByMovement(xDelta, yDelta, yawDelta) * this->belief;
     float probabilityByScan = ProbabilityByLaserScan(this->xDelta, this->yDelta, this->yawDelta, map, laserProxy);
-    this->belief = probabilityByScan ;//* predictionBelif; //* BELIEF_MAGIC_NUMBER;
+    this->belief = probabilityByScan * predictionBelif * BELIEF_MAGIC_NUMBER;
 
-    if (this->belief > 1)
+    // In case the belief is more than 1, put 1 instead.
+    if (this->belief > 1) {
     	this->belief = 1;
+    }
 }
 
 float Particle::Random(float min, float max)
@@ -46,6 +50,7 @@ float Particle::Random(float min, float max)
     return min + num * (max - min);
 }
 
+// calculate the distance. the more the distance is shorter - the better probability.
 float Particle::ProbabilityByMovement(float xDelta, float yDelta, float yawDelta)
 {
 
@@ -69,10 +74,9 @@ float Particle::ProbabilityByMovement(float xDelta, float yDelta, float yawDelta
 	return 0.1;
 }
 
+// Get the probability of this particle by using the laser scan.
 float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelta, Map* map, LaserProxy* laserProxy)
 {
-	//cout << "X: " << xDelta << "Y: " << yDelta << " YAW: " << yawDelta << endl;
-
 	float mapWidth = map->width;
 	float mapHeight = map->height;
 
@@ -82,18 +86,18 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 	int xCoord = floor(x);
 	int yCoord = floor(y);
 
+	// In case we are out of bound, return a low probability.
 	if (x < 0 || x >= mapWidth ||
 	    y < 0 || y >= mapHeight)
 	{
-		//printf("Oops! out of bound! (%f, %f)\n", x, y);
 		return 0;
 	}
 
 	vector< vector<Utils::CELL_STATUS> > grid = map->originalMap;
 
+	// In case there is an obstacle in this point, return a low probability.
 	if (grid[yCoord][xCoord] == 1)
 	{
-		printf("!!obstacle ahead! at (%u, %u) with value:%u\n", yCoord, xCoord, grid[yCoord][xCoord]);
 		return 0;
 	}
 
@@ -103,7 +107,6 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 	float totalHits = 0;
 	float correctHits = 0;
 	int boundaryMisses = 0;
-
 	for(int i=0; i < scans; i++)
 	{
 		float range = laserProxy->GetRange(i);
@@ -113,7 +116,6 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 			totalHits++;
 
 			float bearing = laserProxy->GetBearing(i);
-					//Utils::IndexToRadians(i);
 
 			float rangeInPixels = Utils::MeterToPixel(range);
 			float yawInRadians = Utils::DegreeToRadian(yawDelta);
@@ -121,8 +123,7 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 			float obstacleX = xDelta + rangeInPixels * cos(yawInRadians + bearing);
 			float obstacleY = yDelta - rangeInPixels * sin(yawInRadians + bearing);
 
-			//cout << "obstacle in range: " << rangeInPixels << " yaw: " << Utils::RadianToDegree(yawInRadians + bearing) << endl;
-
+			// Check if we missed boundaries.
 			if ((obstacleX) < 0 || (obstacleX) >= mapWidth -10 ||
 					obstacleY < 0 || (obstacleY) >= mapHeight -10)
 			{
@@ -131,25 +132,21 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 				continue;
 			}
 
+			// Check if there's a hit on an obstacle.
 			if (grid[floor(obstacleY)][floor(obstacleX)] == 1)
 			{
 
 				correctHits++;
-				//cout << "correct hit on: [" << obstacleX << ", " << obstacleY << "]   ";
-			}
-			else
-			{
-				//cout << "!missed hit on: [" << obstacleX << ", " << obstacleY << "]   ";
 			}
 		}
 	}
 
 	float accuracy = correctHits / totalHits;
-	//cout << "--Particle accuracy: " << accuracy << " Yaw " << yawDelta << " correct hits: " << correctHits  << " total hits: " << totalHits << endl;
 
 	return accuracy;
 }
 
+// Create child-particle.
 Particle* Particle::CreateChild()
 {
     return CreateChild(EXPANSION_RADIUS, YAW_RANGE);
