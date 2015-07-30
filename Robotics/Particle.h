@@ -22,7 +22,7 @@ using namespace PlayerCc;
 #define HIGH_BREED 20
 #define MAX_PARTICLES_COUNT 250
 #define EXPANSION_RADIUS 1
-#define YAW_RANGE 3
+#define YAW_RANGE 6
 #define LOW_BELIEF_MIN 0.5
 #define HIGH_BELIEF_MIN 0.85
 #define BELIEF_MAGIC_NUMBER 2
@@ -41,8 +41,6 @@ public:
 	float yDelta;
 	float yawDelta;
 	float belief;
-
-	int lifes;
 	int age;
 
 	float Random(float min, float max);
@@ -53,7 +51,6 @@ public:
 	Particle* CreateChild();
 	Particle* CreateChild(float expansionRadius, float yawRange);
 	void Update(float X_delta, float Y_delta, float Yaw_delta, Map* map, LaserProxy* lp);
-	bool IsDead();
 
 	float GetX();
 	float GetY();

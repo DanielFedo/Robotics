@@ -15,7 +15,6 @@ Particle::Particle(float xDelta, float yDelta, float yawDelta, float belief)
 	this->yawDelta = yawDelta;
 	this->belief = belief;
 
-	this->lifes = PARTICLE_LIFES_NUM;
 	this->age = 1;
 }
 
@@ -24,7 +23,7 @@ Particle* Particle::CreateChild(float expansionRadius, float yawRange)
     float newX = this->xDelta + Random(-expansionRadius, expansionRadius);
     float newY = this->yDelta + Random(-expansionRadius, expansionRadius);
     float newYaw = this->yawDelta + Random(-yawRange, yawRange);
-    return new Particle(newX, newY, newYaw, 1);
+    return new Particle(newX, newY, newYaw, -1);
 }
 
 void Particle::Update(float xDelta, float yDelta, float yawDelta, Map* map, LaserProxy* laserProxy)
@@ -33,7 +32,7 @@ void Particle::Update(float xDelta, float yDelta, float yawDelta, Map* map, Lase
     this->yDelta += yDelta;
     this->yawDelta += yawDelta;
 
-    float predictionBelif = ProbabilityByMovement(xDelta, yDelta, yawDelta) * this->belief;
+    //float predictionBelif = ProbabilityByMovement(xDelta, yDelta, yawDelta) * this->belief;
     float probabilityByScan = ProbabilityByLaserScan(this->xDelta, this->yDelta, this->yawDelta, map, laserProxy);
     this->belief = probabilityByScan ;//* predictionBelif; //* BELIEF_MAGIC_NUMBER;
 
@@ -74,15 +73,14 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 {
 	//cout << "X: " << xDelta << "Y: " << yDelta << " YAW: " << yawDelta << endl;
 
-	// should be pixels.
 	float mapWidth = map->width;
 	float mapHeight = map->height;
 
 	float x = xDelta;
 	float y = yDelta;
 
-	int xCoord = floor(x / 4);
-	int yCoord = floor(y / 4);
+	int xCoord = floor(x);
+	int yCoord = floor(y);
 
 	if (x < 0 || x >= mapWidth ||
 	    y < 0 || y >= mapHeight)
@@ -91,7 +89,7 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 		return 0;
 	}
 
-	vector< vector<Utils::CELL_STATUS> > grid = map->matrix;
+	vector< vector<Utils::CELL_STATUS> > grid = map->originalMap;
 
 	if (grid[yCoord][xCoord] == 1)
 	{
@@ -129,11 +127,11 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 					obstacleY < 0 || (obstacleY) >= mapHeight -10)
 			{
 				boundaryMisses++;
-				totalHits--;
+
 				continue;
 			}
 
-			if (grid[floor(obstacleY / 4)][floor(obstacleX / 4)] == 1)
+			if (grid[floor(obstacleY)][floor(obstacleX)] == 1)
 			{
 
 				correctHits++;
@@ -147,7 +145,7 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 	}
 
 	float accuracy = correctHits / totalHits;
-	//cout << "--Particle accuracy: " << accuracy << " Yaw " << yawDelta << endl;
+	//cout << "--Particle accuracy: " << accuracy << " Yaw " << yawDelta << " correct hits: " << correctHits  << " total hits: " << totalHits << endl;
 
 	return accuracy;
 }
@@ -155,11 +153,6 @@ float Particle::ProbabilityByLaserScan(float xDelta, float yDelta, float yawDelt
 Particle* Particle::CreateChild()
 {
     return CreateChild(EXPANSION_RADIUS, YAW_RANGE);
-}
-
-bool Particle::IsDead()
-{
-    return lifes <= 0;
 }
 
 float Particle::GetX()

@@ -36,6 +36,49 @@ Point * Map::getLocationInMap(Point *locationInWorld) {
 	Point *newPoint = new Point(locationInWorld->x / d, locationInWorld->y / d, NULL);
 }
 
+// Loads the original map to a matrix
+void Map::loadMapToMatrix()
+{
+	// Resize the matrix to match the image size
+	originalMap.resize(this->width);
+
+	for (int i = 0; i < this->height; i++)
+	{
+		originalMap[i].resize(this->width);
+	}
+
+	int r;
+	int g;
+	int b;
+	Utils::CELL_STATUS cell;
+
+	// Init the matrix values
+	for (int i = 0; i < width * height * 4; i += 4)
+	{
+		r = image[i];
+		g = image[i + 1];
+		b = image[i + 2];
+
+		// Black pixel
+		if ((r == 0) & (g == 0) & (b == 0))
+			cell = Utils::BLOCK;
+		// White pixel
+		else if ((r == 255) & (g == 255) & (b == 255))
+			cell = Utils::FREE;
+		// Unknown Pixel
+		else
+			cell = Utils::UNKNOWN;
+
+		originalMap[(i / 4) / width][(i / 4) % width] = cell;
+
+		// TODO: Remove in final version
+		if ((i / 4) % width == 0)
+			std::cout << std::endl;
+
+		std::cout << cell;
+	}
+}
+
 // Loads a png file into a matrix
 void Map::loadToMatrix()
 {

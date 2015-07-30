@@ -32,7 +32,7 @@ void LocalizationManager::Update(float deltaX, float deltaY, float deltaYaw, Las
 	vector<int> childsToRemove;
 	int particlesSize = particles.size();
 
-
+	// Update all the particles
 	for (int i = 0; i < particlesSize; i++)
 	{
 		Particle* particle = particles[i];
@@ -40,32 +40,30 @@ void LocalizationManager::Update(float deltaX, float deltaY, float deltaYaw, Las
 
 		float belif = particle->belief;
 
+		// If belief is too low - remove the particle
 		if (belif <= LOW_BELIEF_MIN)
 		{
-			particle->lifes--;
-
-			if (particle->IsDead() || belif <= 3)
-			{
-				childsToRemove.push_back(i);
-			}
+			childsToRemove.push_back(i);
 		}
+		// If belief is high - high breed
 		else if (belif >= HIGH_BELIEF_MIN &&
 				 ((particlesSize + HIGH_BREED + childsToAdd.size()) < MAX_PARTICLES_COUNT))
 		{
-				particle->age++;
-				BreedParticle(particle, HIGH_BREED, childsToAdd);
+			particle->age++;
+			BreedParticle(particle, HIGH_BREED, childsToAdd);
 		}
+		// If belief is normal - normal breed
 		else if ((particlesSize + NORMAL_BREED + childsToAdd.size()) < MAX_PARTICLES_COUNT)
 		{
-				particle->age++;
-				BreedParticle(particle, NORMAL_BREED, childsToAdd);
+			particle->age++;
+			BreedParticle(particle, NORMAL_BREED, childsToAdd);
 		}
 	}
 
 	if (childsToRemove.size() > 0)
-        {
+	{
 		for(int i = childsToRemove.size() - 1; i >=0 ; i--)
-                {
+		{
 			int indexToRemove = childsToRemove[i];
 			particles.erase(particles.begin() + indexToRemove);
 		}
@@ -101,8 +99,10 @@ void LocalizationManager::BreedParticle(Particle* particle, int childCount, floa
 	}
 }
 
+// This method return the particle with highest belief
 Particle* LocalizationManager::BestParticle()
 {
+	// If there are no particles - we need to generate new ones
 	if (particles.empty())
 	{
 		printf("!!Out of particles! Making new ones!\n");
@@ -119,11 +119,12 @@ Particle* LocalizationManager::BestParticle()
 
 	Particle* bestParticle = particles[0];
 
-	//cout << "** Choosing best particle **" << endl;
+	cout << "** Choosing best particle **" << endl;
 
+	// Search for the best particale
 	for (int i = 1; i < particles.size(); i++)
 	{
-		//cout << "[" << particles[i]->xDelta << "," << particles[i]->yDelta << "] Yaw: " << particles[i]->yawDelta << " b: " << particles[i]->belief << " l: " << particles[i]->lifes << endl;
+		cout << "[" << particles[i]->xDelta << "," << particles[i]->yDelta << "] Yaw: " << particles[i]->yawDelta << " b: " << particles[i]->belief << endl;
 
 		if (particles[i]->belief > bestParticle->belief)
 				//&& particles[i]->age < bestParticle->age)
@@ -142,7 +143,7 @@ Particle* LocalizationManager::BestParticle()
 void LocalizationManager::ChildsToParticles(vector<Particle*> childs)
 {
 	for (int i = 0; i < childs.size(); i++)
-        {
+	{
 		particles.push_back(childs[i]);
 	}
 }

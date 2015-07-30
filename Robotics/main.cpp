@@ -17,6 +17,9 @@ int main()
 	// Load the map of the room
 	map->loadPng(filename);
 
+	// Load original map to a matrix
+	map->loadMapToMatrix();
+
 	// Expand the map relative to the the robot's size
 	map->expand();
 

@@ -27,6 +27,7 @@ public:
 
 	vector< vector<Utils::CELL_STATUS> > matrix;
 	vector< vector<Utils::CELL_STATUS> > newMatrix;
+	vector< vector<Utils::CELL_STATUS> > originalMap;
 	vector<unsigned char> image;
 	vector<unsigned char> grid;
 	static Map* instance;
@@ -34,6 +35,7 @@ public:
 	static Map* getInstance();
 
 	Map();
+	void loadMapToMatrix();
 	void loadPng(const char* filename);
 	void writePng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height);
 	void loadToMatrix();
