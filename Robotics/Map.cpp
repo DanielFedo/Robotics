@@ -11,29 +11,59 @@
 
 Map* Map::instance = NULL;
 
-Map* Map::getInstance(){
-	if (Map::instance == NULL){
+// Singleton implementation
+Map* Map::getInstance()
+{
+	if (Map::instance == NULL)
+	{
 		Map::instance = new Map();
 	}
 
 	return Map::instance;
 }
 
-Map::Map() {
+Map::Map()
+{
 	robotSizeInPixels = Utils::configurationManager->robotLength;
 	mapResolutionCM = Utils::configurationManager->mapResolution;
 	gridResolutionCM = 10;
 }
 
-Point * Map::getLocationInWorld(Point *locationInMap) {
+// Get location in cm
+Point * Map::getLocationInWorld(Point *locationInMap)
+{
 	double d = mapResolutionCM / gridResolutionCM;
 	Point *newPoint = new Point(locationInMap->x * d, locationInMap->y * d, NULL);
 	return newPoint;
 }
 
-Point * Map::getLocationInMap(Point *locationInWorld) {
+// Get location in grid (pixels)
+Point * Map::getLocationInMap(Point *locationInWorld)
+{
 	double d = mapResolutionCM / gridResolutionCM;
 	Point *newPoint = new Point(locationInWorld->x / d, locationInWorld->y / d, NULL);
+
+	return newPoint;
+}
+
+void Map::init(char *filename)
+{
+	// Load the map of the room
+	this->loadPng(filename);
+
+	// Expand the map relative to the the robot's size
+	this->expand();
+
+	// Load original map to a matrix
+	this->loadMapToMatrix();
+
+	// Convert the map to a grid
+	this->convertToGrid();
+
+	// Load the map into a matrix
+	this->loadToMatrix();
+
+	this->printMap();
 }
 
 // Loads the original map to a matrix
@@ -122,6 +152,7 @@ void Map::loadToMatrix()
 	}
 }
 
+// Converts the matrix back to a png
 void Map::matrixToPng()
 {
 	for (int i = 0; i < height; i++)
@@ -150,6 +181,8 @@ void Map::matrixToPng()
 	}
 }
 
+// Expands the blocked cells on the matrix
+// according to the size of the robot
 void Map::expand()
 {
 	// Init the matrix values
@@ -182,13 +215,13 @@ void Map::expand()
 		}
 	}
 
-	writePng("AfterExpandBLACK.jpg", image, width, height);
+	//writePng("AfterExpandBLACK.jpg", image, width, height);
 }
 
+// Expand a pixel on the map according to the given expansion radius
 void Map::expandPixel(int location, int expansionPixels)
 {
 	int startLocation = (location - (width * expansionPixels * 4)) - (expansionPixels * 4);
-
 	int endLocation = (location + (width * expansionPixels * 4)) + (expansionPixels * 4);
 
 	for (int i = startLocation; i < endLocation; i += width * 4)
@@ -217,6 +250,7 @@ void Map::loadPng(const char* filename)
   //the pixels are now in the vector "image", 4 bytes per pixel, ordered RGBARGBA..., use it as texture, draw it, ...
 }
 
+// Write an array into a png
 void Map::writePng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
 {
 	//Encode the image
@@ -226,7 +260,7 @@ void Map::writePng(const char* filename, std::vector<unsigned char>& image, unsi
 	if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 }
 
-// Prints the nap to the console
+// Prints the map to the console
 void Map::printMap()
 {
 	for (int i = 0; i < gridHeight; i++)
@@ -239,14 +273,16 @@ void Map::printMap()
 		std::cout << std::endl;
 	}
 
-	writePng("helloyair.png", image, width, height);
+	//writePng("helloyair.png", image, width, height);
 }
 
+// Return if a cell on the grid is empty and free for the robot
 bool Map::isCellFree(int x, int y)
 {
 	return (matrix[y][x] == Utils::FREE);
 }
 
+// Converts the map into a grid according to the given grid resolution
 void Map::convertToGrid()
 {
 	// Define variables.
@@ -318,5 +354,5 @@ void Map::convertToGrid()
 	}
 
 	grid = newImage;
-	writePng("galvemoris.png", newImage, width / GridResolutionPixels, height / GridResolutionPixels);
+	//writePng("galvemoris.png", newImage, width / GridResolutionPixels, height / GridResolutionPixels);
 }

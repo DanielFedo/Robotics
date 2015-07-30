@@ -46,6 +46,7 @@ public:
 	void matrixToPng();
 	Point* getLocationInWorld(Point *locatioInMap);
 	Point* getLocationInMap(Point *locatioInWorld);
+	void init(char *filename);
 
 private:
 	void expandPixel(int location, int pixelAmount);
